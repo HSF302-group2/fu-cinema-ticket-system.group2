@@ -21,4 +21,8 @@ public class SessionUser implements Serializable {
     public boolean isCustomer() {
         return role == Role.CUSTOMER;
     }
+
+    public boolean isStaff() {
+        return role == Role.STAFF;
+    }
 }

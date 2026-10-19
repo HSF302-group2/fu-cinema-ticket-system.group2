@@ -1,4 +1,16 @@
+﻿# Sao chép file này thành application-local.properties rồi điền thông tin database trên máy cá nhân.
+spring.datasource.url=jdbc:sqlserver://localhost:1433;databaseName=FUCinemaTicketDB;encrypt=true;trustServerCertificate=true
+spring.datasource.username=sa
+spring.datasource.password=CHANGE_ME
 # Mau cau hinh SQL Server cho tung thanh vien
 spring.datasource.url=jdbc:sqlserver://localhost:1433;databaseName=FUCinemaTicketDB;encrypt=true;trustServerCertificate=true
 spring.datasource.username=sa
 spring.datasource.password=CHANGE_ME
+
+# Sao chép file này thành application-local.properties rồi điền thông tin database trên máy cá nhân.
+# Mau cau hinh SQL Server cho tung thanh vien
+
+spring.datasource.url=jdbc:sqlserver://localhost:1433;databaseName=FUCinemaTicketDB;encrypt=true;trustServerCertificate=true
+spring.datasource.username=sa
+spring.datasource.password=CHANGE_ME
+

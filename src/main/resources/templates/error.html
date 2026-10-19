@@ -1,0 +1,20 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head th:replace="~{fragments/layout :: head('Đã xảy ra lỗi')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<main class="container py-5 text-center">
+    <h1 class="display-4">Đã xảy ra lỗi</h1>
+    <p class="lead">Yêu cầu của bạn không thể được xử lý.</p>
+    <p>
+        Mã lỗi:
+        <span th:text="${status}">500</span>
+    </p>
+    <a class="btn btn-primary" th:href="@{/}">Về trang chủ</a>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>
