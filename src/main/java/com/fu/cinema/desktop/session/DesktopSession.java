@@ -1,6 +1,8 @@
 package com.fu.cinema.desktop.session;
 
 import com.fu.cinema.dto.SessionUser;
+import com.fu.cinema.exception.BusinessException;
+import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import org.springframework.stereotype.Component;
@@ -8,32 +10,54 @@ import org.springframework.stereotype.Component;
 @Component
 public class DesktopSession {
 
-    private final ReadOnlyStringWrapper displayName =
-            new ReadOnlyStringWrapper("Chưa đăng nhập");
+    private volatile SessionUser user;
 
-    private SessionUser currentUser;
+    private final ReadOnlyStringWrapper displayName =
+            new ReadOnlyStringWrapper("");
 
     public void login(SessionUser user) {
-        if (user == null) {
-            throw new IllegalArgumentException(
-                    "Thông tin người dùng không được null"
+        requireFxThread();
+
+        if (user == null || !user.isAdmin()) {
+            throw new BusinessException(
+                    "Ứng dụng quầy vé chỉ dành cho tài khoản ADMIN"
             );
         }
 
-        currentUser = user;
+        this.user = user;
         displayName.set(user.getDisplayName());
     }
 
     public void logout() {
-        currentUser = null;
-        displayName.set("Chưa đăng nhập");
+        requireFxThread();
+
+        user = null;
+        displayName.set("");
     }
 
-    public SessionUser getCurrentUser() {
-        return currentUser;
+    public SessionUser getUser() {
+        return user;
     }
 
     public ReadOnlyStringProperty displayNameProperty() {
         return displayName.getReadOnlyProperty();
+    }
+
+    public void requireAdmin() {
+        SessionUser currentUser = user;
+
+        if (currentUser == null || !currentUser.isAdmin()) {
+            throw new BusinessException(
+                    "Bạn không có quyền thực hiện thao tác này"
+            );
+        }
+    }
+
+    private void requireFxThread() {
+        if (!Platform.isFxApplicationThread()) {
+            throw new IllegalStateException(
+                    "Cập nhật session phải chạy trên JavaFX thread"
+            );
+        }
     }
 }

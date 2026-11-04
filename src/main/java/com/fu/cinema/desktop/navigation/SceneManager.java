@@ -1,5 +1,7 @@
 package com.fu.cinema.desktop.navigation;
 
+import com.fu.cinema.desktop.controller.MainController;
+import com.fu.cinema.desktop.session.DesktopSession;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -20,12 +22,18 @@ public class SceneManager {
     private static final String CSS = "/desktop/css/desktop.css";
 
     private final ApplicationContext context;
+    private final DesktopSession session;
 
     private Stage stage;
     private Scene scene;
+    private MainController activeMainController;
 
-    public SceneManager(ApplicationContext context) {
+    public SceneManager(
+            ApplicationContext context,
+            DesktopSession session
+    ) {
         this.context = context;
+        this.session = session;
     }
 
     public void init(Stage stage) {
@@ -41,23 +49,26 @@ public class SceneManager {
         stage.setScene(scene);
         stage.setMinWidth(1000);
         stage.setMinHeight(640);
+        stage.setOnHidden(event -> disposeMainController());
         stage.show();
     }
 
-    /**
-     * Đổi toàn bộ nội dung cửa sổ, ví dụ Login ↔ Main.
-     */
     public void switchTo(View view) {
         requireFxThread();
         requireInitialized();
 
-        scene.setRoot(load(view).root());
+        Loaded<Object> loaded = load(view);
+
+        disposeMainController();
+
+        scene.setRoot(loaded.root());
         stage.setTitle(view.title());
+
+        if (loaded.controller() instanceof MainController controller) {
+            activeMainController = controller;
+        }
     }
 
-    /**
-     * Nạp màn hình con vào vùng center của khung chính.
-     */
     public void showIn(BorderPane host, View view) {
         requireFxThread();
 
@@ -67,15 +78,19 @@ public class SceneManager {
     public <C> Loaded<C> load(View view) {
         requireFxThread();
 
+        if (view != View.LOGIN) {
+            session.requireAdmin();
+        }
+
         FXMLLoader loader = new FXMLLoader(
                 requireResource(view.path())
         );
 
-        // Lấy controller từ Spring để hỗ trợ dependency injection.
         loader.setControllerFactory(context::getBean);
 
         try {
             Parent root = loader.load();
+
             return new Loaded<>(root, loader.getController());
         } catch (IOException ex) {
             throw new UncheckedIOException(
@@ -86,6 +101,13 @@ public class SceneManager {
 
     public Stage getStage() {
         return stage;
+    }
+
+    private void disposeMainController() {
+        if (activeMainController != null) {
+            activeMainController.dispose();
+            activeMainController = null;
+        }
     }
 
     private URL requireResource(String path) {
@@ -101,9 +123,9 @@ public class SceneManager {
     }
 
     private void requireInitialized() {
-        if (scene == null || stage == null) {
+        if (stage == null || scene == null) {
             throw new IllegalStateException(
-                    "Cần gọi SceneManager.init() trước khi chuyển màn hình"
+                    "Cần khởi tạo SceneManager trước"
             );
         }
     }

@@ -48,12 +48,17 @@ public class MainController {
 
     @FXML
     private void initialize() {
+        session.requireAdmin();
+
         lblUser.textProperty().bind(
                 Bindings.concat(
                         "Nhân viên: ",
                         session.displayNameProperty()
                 )
         );
+
+        // Tải màn hình đầu tiên trước khi bắt đầu đồng hồ.
+        onDashboard();
 
         updateClock();
 
@@ -66,8 +71,6 @@ public class MainController {
 
         clock.setCycleCount(Animation.INDEFINITE);
         clock.play();
-
-        onDashboard();
     }
 
     @FXML
@@ -107,7 +110,6 @@ public class MainController {
 
     @FXML
     private void onLogout() {
-        dispose();
         session.logout();
         sceneManager.switchTo(View.LOGIN);
     }
@@ -115,9 +117,12 @@ public class MainController {
     public void dispose() {
         if (clock != null) {
             clock.stop();
+            clock = null;
         }
 
-        lblUser.textProperty().unbind();
+        if (lblUser != null) {
+            lblUser.textProperty().unbind();
+        }
     }
 
     private void updateClock() {
