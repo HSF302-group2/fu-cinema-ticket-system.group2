@@ -57,6 +57,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             JOIN FETCH b.customer c
             JOIN FETCH b.showtime s
             JOIN FETCH s.movie m
+            JOIN FETCH s.room r
             WHERE (:status IS NULL OR b.status = :status)
               AND (:from IS NULL OR b.bookingDate >= :from)
               AND (:to IS NULL OR b.bookingDate < :to)
