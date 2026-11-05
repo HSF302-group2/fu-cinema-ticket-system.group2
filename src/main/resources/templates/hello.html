@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Hello View</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
+</head>
+<body class="container mt-5">
+    <h1 class="display-4" th:text="${message}">Hello, World!</h1>
+    <p class="lead">This is a simple hello page using Thymeleaf.</p>
+    <a th:href="@{/}" class="btn btn-primary">Back to Home</a>
+</body>
+</html>

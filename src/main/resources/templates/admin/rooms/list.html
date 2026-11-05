@@ -1,33 +1,60 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="vi">
-<head th:replace="~{fragments/layout :: head('Phòng chiếu')}"></head>
+<head th:replace="~{fragments/layout :: head('Quản lý phòng chiếu')}"></head>
 <body>
 <nav th:replace="~{fragments/layout :: navbar}"></nav>
 <main class="container py-4">
     <div th:replace="~{fragments/layout :: flash}"></div>
-    <div class="d-flex justify-content-between mb-3">
-        <h3>Phòng chiếu</h3>
-        <a class="btn btn-primary" th:href="@{/admin/rooms/new}">+ Thêm phòng</a>
+
+    <div class="cinema-card">
+        <div class="cinema-card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0 fw-bold">🎬 Danh mục phòng chiếu</h5>
+            <a class="btn btn-primary btn-sm fw-bold px-3" th:href="@{/admin/rooms/new}">+ Thêm phòng mới</a>
+        </div>
+        <div class="cinema-card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                    <tr>
+                        <th class="ps-3">Tên phòng</th>
+                        <th>Loại phòng</th>
+                        <th>Sơ đồ cấu hình</th>
+                        <th>Sức chứa</th>
+                        <th>Trạng thái</th>
+                        <th class="text-end pe-3">Thao tác</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${#lists.isEmpty(rooms)}">
+                        <td colspan="6" class="text-center py-4 text-muted">Chưa có phòng chiếu nào được tạo.</td>
+                    </tr>
+                    <tr th:each="r : ${rooms}">
+                        <td class="ps-3 fw-bold text-dark" th:text="${r.roomName}"></td>
+                        <td>
+                            <span class="badge bg-secondary" th:text="${r.roomType.label}"></span>
+                        </td>
+                        <td class="small" th:text="|${r.totalRows} hàng × ${r.seatsPerRow} ghế/hàng|"></td>
+                        <td>
+                            <span class="badge bg-light text-dark border fw-bold" th:text="|${r.capacity} ghế|"></span>
+                        </td>
+                        <td>
+                            <span class="badge" th:classappend="|badge-status-${r.status}|" th:text="${r.status}"></span>
+                        </td>
+                        <td class="text-end pe-3 text-nowrap">
+                            <a class="btn btn-sm btn-outline-secondary me-1" th:href="@{/admin/rooms/{id}/edit(id=${r.roomId})}">
+                                Sửa
+                            </a>
+                            <form class="d-inline" method="post" th:action="@{/admin/rooms/{id}/delete(id=${r.roomId})}"
+                                  onsubmit="return confirm('Xoá phòng này? Lưu ý: Nếu phòng đã có suất chiếu, trạng thái sẽ tự động chuyển sang MAINTENANCE thay vì xoá khỏi CSDL.');">
+                                <button class="btn btn-sm btn-outline-danger">Xoá</button>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
-    <table class="table table-hover align-middle">
-        <thead class="table-light"><tr><th>Tên phòng</th><th>Loại</th><th>Sơ đồ</th><th>Sức chứa</th><th>Trạng thái</th><th></th></tr></thead>
-        <tbody>
-        <tr th:each="r : ${rooms}">
-            <td th:text="${r.roomName}"></td>
-            <td th:text="${r.roomType.label}"></td>
-            <td th:text="|${r.totalRows} hàng × ${r.seatsPerRow} ghế|"></td>
-            <td th:text="${r.capacity}"></td>
-            <td th:text="${r.status}"></td>
-            <td class="text-end text-nowrap">
-                <a class="btn btn-sm btn-outline-secondary" th:href="@{/admin/rooms/{id}/edit(id=${r.roomId})}">Sửa</a>
-                <form class="d-inline" method="post" th:action="@{/admin/rooms/{id}/delete(id=${r.roomId})}"
-                      onsubmit="return confirm('Xoá phòng? Nếu đã có suất chiếu, phòng sẽ chuyển sang MAINTENANCE.');">
-                    <button class="btn btn-sm btn-outline-danger">Xoá</button>
-                </form>
-            </td>
-        </tr>
-        </tbody>
-    </table>
 </main>
 <footer th:replace="~{fragments/layout :: footer}"></footer>
 </body>
