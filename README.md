@@ -111,6 +111,21 @@ src/test          # test khởi động ứng dụng với H2
 | Người 1 (Leader) — `Phạm Lê Anh Tài` [@planhtai2005-web](https://github.com/planhtai2005-web) | `DE190702` | Khởi tạo project, entity, repository, dữ liệu mẫu, service layer, xử lý lỗi, đăng nhập/đăng ký/phân quyền, README & release |
 | Người 2 — `Cao Đức Tiến`[@CaoDucTien-web](https://github.com/CaoDucTien) | `DE190608` | Quản lý khách hàng, hồ sơ cá nhân và đổi mật khẩu |
 | Người 3 — `Hoàng Khánh Hòa`[@hoangkhanhhoa1976vn-web](https://github.com/hoangkhanhhoa1976vn-de) | `DE190162` | Thể loại, phim, trang chủ & chi tiết phim, đánh giá (bonus) |
+| Người 4 — `Nguyễn Phước Hoài Nhật`[@nhatnphde180216-design](https://github.com/nhatnphde180216-design) | `DE180216` | Phòng chiếu, suất chiếu, đặt vé, quản lý đơn, lịch sử đơn, báo cáo doanh thu |
+
+## Đóng góp nhóm
+
+- **Quy trình làm việc**: Nhánh `main` là bản phát hành, `develop` là nhánh phát triển, các tính năng và tài liệu được phát triển trên các nhánh `feature/*` và `docs/*`. Mỗi PR yêu cầu ít nhất 1 reviewer và phải vượt qua kiểm tra CI (`./mvnw verify`).
+- **Tiêu chuẩn commit**: Sử dụng Conventional Commits (ví dụ `feat(controller): add movie detail endpoint`).
+- **Kiểm tra**: Tất cả các unit test và integration test phải chạy thành công (`./mvnw test`).
+- **Release**: Khi tính năng ổn định, tạo Pull Request tới `release/*`, sau khi merge sẽ tự động tạo tag phiên bản và đóng gói artifact.
+
+
+| Thành viên | MSSV | Chức năng |
+|---|---|---|
+| Người 1 (Leader) — `Phạm Lê Anh Tài` [@planhtai2005-web](https://github.com/planhtai2005-web) | `DE190702` | Khởi tạo project, entity, repository, dữ liệu mẫu, service layer, xử lý lỗi, đăng nhập/đăng ký/phân quyền, README & release |
+| Người 2 — `Cao Đức Tiến`[@CaoDucTien-web](https://github.com/CaoDucTien) | `DE190608` | Quản lý khách hàng, hồ sơ cá nhân và đổi mật khẩu |
+| Người 3 — `Hoàng Khánh Hòa`[@hoangkhanhhoa1976vn-web](https://github.com/hoangkhanhhoa1976vn-de) | `DE190162` | Thể loại, phim, trang chủ & chi tiết phim, đánh giá (bonus) |
 | Người 4 — `Nguyễn Phước Hoài Nhật`[@nhatnphde180216-web](https://github.com/nhatnphde180216-design) | `DE180216` | Phòng chiếu, suất chiếu, đặt vé, quản lý đơn, lịch sử đơn, báo cáo doanh thu |
 
 ## Quy trình làm việc nhóm

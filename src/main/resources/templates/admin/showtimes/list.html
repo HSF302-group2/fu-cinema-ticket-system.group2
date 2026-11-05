@@ -1,51 +1,88 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="vi">
-<head th:replace="~{fragments/layout :: head('Suất chiếu')}"></head>
+<head th:replace="~{fragments/layout :: head('Quản lý suất chiếu')}"></head>
 <body>
 <nav th:replace="~{fragments/layout :: navbar}"></nav>
 <main class="container py-4">
     <div th:replace="~{fragments/layout :: flash}"></div>
-    <div class="d-flex justify-content-between mb-3">
-        <h3>Suất chiếu</h3>
-        <a class="btn btn-primary" th:href="@{/admin/showtimes/new}">+ Thêm suất chiếu</a>
+
+    <!-- Thanh lọc tìm kiếm -->
+    <div class="cinema-card mb-3">
+        <div class="cinema-card-body p-3">
+            <form class="row g-2 align-items-center" method="get" th:action="@{/admin/showtimes}">
+                <div class="col-md-3">
+                    <label class="form-label small text-muted mb-1">Ngày chiếu:</label>
+                    <input type="date" class="form-control form-control-sm" name="date" th:value="${date}">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label small text-muted mb-1">Chọn phim:</label>
+                    <select class="form-select form-select-sm" name="movieId">
+                        <option value="">-- Tất cả phim --</option>
+                        <option th:each="m : ${movies}" th:value="${m.movieId}" th:text="${m.title}" th:selected="${m.movieId == movieId}"></option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label small text-muted mb-1">Chọn phòng:</label>
+                    <select class="form-select form-select-sm" name="roomId">
+                        <option value="">-- Tất cả phòng --</option>
+                        <option th:each="r : ${rooms}" th:value="${r.roomId}" th:text="${r.roomName}" th:selected="${r.roomId == roomId}"></option>
+                    </select>
+                </div>
+                <div class="col-md-2 mt-auto">
+                    <button class="btn btn-primary btn-sm w-100 fw-bold">🔍 Lọc danh sách</button>
+                </div>
+            </form>
+        </div>
     </div>
-    <form class="row g-2 mb-3" method="get" th:action="@{/admin/showtimes}">
-        <div class="col-md-3"><input type="date" class="form-control" name="date" th:value="${date}"></div>
-        <div class="col-md-4">
-            <select class="form-select" name="movieId">
-                <option value="">Tất cả phim</option>
-                <option th:each="m : ${movies}" th:value="${m.movieId}" th:text="${m.title}" th:selected="${m.movieId == movieId}"></option>
-            </select>
+
+    <!-- Danh sách suất chiếu -->
+    <div class="cinema-card">
+        <div class="cinema-card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0 fw-bold">📅 Lịch chiếu phim</h5>
+            <a class="btn btn-primary btn-sm fw-bold px-3" th:href="@{/admin/showtimes/new}">+ Thêm suất chiếu</a>
         </div>
-        <div class="col-md-3">
-            <select class="form-select" name="roomId">
-                <option value="">Tất cả phòng</option>
-                <option th:each="r : ${rooms}" th:value="${r.roomId}" th:text="${r.roomName}" th:selected="${r.roomId == roomId}"></option>
-            </select>
+        <div class="cinema-card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                    <tr>
+                        <th class="ps-3">Phim chiếu</th>
+                        <th>Phòng</th>
+                        <th>Giờ bắt đầu</th>
+                        <th>Giờ kết thúc</th>
+                        <th>Giá vé</th>
+                        <th>Trạng thái</th>
+                        <th class="text-end pe-3">Thao tác</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${showtimes.empty}">
+                        <td colspan="7" class="text-center py-4 text-muted">Không có suất chiếu nào phù hợp.</td>
+                    </tr>
+                    <tr th:each="s : ${showtimes.content}">
+                        <td class="ps-3 fw-bold text-dark" th:text="${s.movie.title}"></td>
+                        <td th:text="${s.room.roomName}"></td>
+                        <td class="small fw-bold text-primary" th:text="${#temporals.format(s.startTime, 'dd/MM/yyyy HH:mm')}"></td>
+                        <td class="small text-muted" th:text="${#temporals.format(s.endTime, 'HH:mm')}"></td>
+                        <td class="fw-bold text-danger" th:text="${#numbers.formatDecimal(s.ticketPrice, 0, 'COMMA', 0, 'POINT')} + 'đ'"></td>
+                        <td>
+                            <span class="badge" th:classappend="|badge-status-${s.status}|" th:text="${s.status}"></span>
+                        </td>
+                        <td class="text-end pe-3 text-nowrap">
+                            <a class="btn btn-sm btn-outline-secondary me-1" th:href="@{/admin/showtimes/{id}/edit(id=${s.showtimeId})}">
+                                Sửa
+                            </a>
+                            <form class="d-inline" method="post" th:action="@{/admin/showtimes/{id}/delete(id=${s.showtimeId})}"
+                                  onsubmit="return confirm('Huỷ hoặc xoá suất chiếu này? (Nếu đã có khách đặt vé, đơn vé sẽ tự động bị huỷ theo BR-09).');">
+                                <button class="btn btn-sm btn-outline-danger">Xoá</button>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
-        <div class="col-md-2 d-grid"><button class="btn btn-outline-primary">Lọc</button></div>
-    </form>
-    <table class="table table-hover align-middle">
-        <thead class="table-light"><tr><th>Phim</th><th>Phòng</th><th>Bắt đầu</th><th>Kết thúc</th><th>Giá vé</th><th>Trạng thái</th><th></th></tr></thead>
-        <tbody>
-        <tr th:if="${showtimes.empty}"><td colspan="7" class="text-center text-muted">Không có dữ liệu</td></tr>
-        <tr th:each="s : ${showtimes.content}">
-            <td th:text="${s.movie.title}"></td>
-            <td th:text="${s.room.roomName}"></td>
-            <td th:text="${#temporals.format(s.startTime, 'dd/MM/yyyy HH:mm')}"></td>
-            <td th:text="${#temporals.format(s.endTime, 'HH:mm')}"></td>
-            <td th:text="${#numbers.formatDecimal(s.ticketPrice, 0, 'COMMA', 0, 'POINT')} + 'đ'"></td>
-            <td th:text="${s.status}"></td>
-            <td class="text-end text-nowrap">
-                <a class="btn btn-sm btn-outline-secondary" th:href="@{/admin/showtimes/{id}/edit(id=${s.showtimeId})}">Sửa</a>
-                <form class="d-inline" method="post" th:action="@{/admin/showtimes/{id}/delete(id=${s.showtimeId})}"
-                      onsubmit="return confirm('Xoá suất chiếu? Nếu đã có đơn, suất chiếu và các đơn sẽ bị huỷ.');">
-                    <button class="btn btn-sm btn-outline-danger">Xoá</button>
-                </form>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+    </div>
     <div th:replace="~{fragments/layout :: pagination(${showtimes}, ${pageUrl})}"></div>
 </main>
 <footer th:replace="~{fragments/layout :: footer}"></footer>
