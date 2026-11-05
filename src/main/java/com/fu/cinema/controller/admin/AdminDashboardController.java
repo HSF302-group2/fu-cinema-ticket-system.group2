@@ -31,4 +31,3 @@ public class AdminDashboardController {
         return "admin/dashboard";
     }
 }
-x`
