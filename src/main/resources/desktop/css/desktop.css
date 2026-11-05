@@ -36,3 +36,9 @@
 .row-label       { -fx-font-weight: bold; -fx-padding: 4; -fx-alignment: center; }
 .btn-primary     { -fx-background-color: #e50914; -fx-text-fill: white; -fx-font-weight: bold; }
 .btn-primary:hover { -fx-background-color: #b91c1c; }
+
+
+/* Order Status Styling (TODO 44) */
+.st-pending   { -fx-text-fill: #b45309; -fx-font-weight: bold; }
+.st-confirmed { -fx-text-fill: #15803d; -fx-font-weight: bold; }
+.st-cancelled { -fx-text-fill: #b91c1c; }
