@@ -1,29 +1,77 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="vi">
-<head th:replace="~{fragments/layout :: head('Chi tiết đơn')}"></head>
+<head th:replace="~{fragments/layout :: head('Chi tiết đơn đặt vé')}"></head>
 <body>
 <nav th:replace="~{fragments/layout :: navbar}"></nav>
-<main class="container py-4" style="max-width: 820px">
+<main class="container py-4" style="max-width: 760px">
     <div th:replace="~{fragments/layout :: flash}"></div>
-    <h3 th:text="|Đơn đặt vé #${booking.bookingId}|"></h3>
-    <table class="table">
-        <tr><th>Trạng thái</th><td th:text="${booking.status}"></td></tr>
-        <tr><th>Ngày đặt</th><td th:text="${#temporals.format(booking.bookingDate, 'dd/MM/yyyy HH:mm')}"></td></tr>
-        <tr><th>Khách hàng</th><td th:text="|${booking.customer.fullName} · ${booking.customer.email} · ${booking.customer.mobile}|"></td></tr>
-        <tr><th>Phim</th><td th:text="${booking.showtime.movie.title}"></td></tr>
-        <tr><th>Suất chiếu</th><td th:text="|${#temporals.format(booking.showtime.startTime, 'dd/MM/yyyy HH:mm')} · ${booking.showtime.room.roomName}|"></td></tr>
-        <tr><th>Ghế</th><td><span class="badge bg-dark me-1" th:each="t : ${booking.tickets}" th:text="${t.seatCode}"></span></td></tr>
-        <tr><th>Tổng tiền</th><td class="fw-bold" th:text="${#numbers.formatDecimal(booking.totalAmount, 0, 'COMMA', 0, 'POINT')} + 'đ'"></td></tr>
-    </table>
-    <div class="d-flex gap-2">
-        <form th:if="${booking.status.name() == 'PENDING'}" method="post" th:action="@{/admin/bookings/{id}/confirm(id=${booking.bookingId})}">
-            <button class="btn btn-success">Xác nhận</button>
-        </form>
-        <form th:if="${booking.status.name() != 'CANCELLED'}" method="post" th:action="@{/admin/bookings/{id}/cancel(id=${booking.bookingId})}"
-              onsubmit="return confirm('Huỷ đơn này?');">
-            <button class="btn btn-outline-danger">Huỷ đơn</button>
-        </form>
-        <a class="btn btn-secondary" th:href="@{/admin/bookings}">Quay lại</a>
+
+    <div class="cinema-card">
+        <div class="cinema-card-header d-flex justify-content-between align-items-center">
+            <div>
+                <span class="badge bg-dark mb-1">QUẢN TRỊ VIÊN</span>
+                <h5 class="mb-0 fw-bold" th:text="|Đơn đặt vé #${booking.bookingId}|"></h5>
+            </div>
+            <div>
+                <span class="badge fs-6" th:classappend="|badge-status-${booking.status}|" th:text="${booking.status}"></span>
+            </div>
+        </div>
+
+        <div class="cinema-card-body">
+            <div class="row g-3 mb-4">
+                <div class="col-sm-6">
+                    <label class="text-muted small">Khách hàng</label>
+                    <div class="fw-bold" th:text="${booking.customer.fullName}"></div>
+                    <div class="small text-muted" th:text="|${booking.customer.email} · ${booking.customer.mobile}|"></div>
+                </div>
+
+                <div class="col-sm-6">
+                    <label class="text-muted small">Thời gian đặt</label>
+                    <div class="fw-bold" th:text="${#temporals.format(booking.bookingDate, 'dd/MM/yyyy HH:mm:ss')}"></div>
+                </div>
+
+                <div class="col-sm-6">
+                    <label class="text-muted small">Phim</label>
+                    <div class="h6 fw-bold text-primary mb-0" th:text="${booking.showtime.movie.title}"></div>
+                </div>
+
+                <div class="col-sm-6">
+                    <label class="text-muted small">Suất chiếu & Phòng</label>
+                    <div class="fw-bold" th:text="|${#temporals.format(booking.showtime.startTime, 'dd/MM/yyyy HH:mm')} · ${booking.showtime.room.roomName}|"></div>
+                </div>
+
+                <div class="col-12">
+                    <label class="text-muted small">Ghế đã đặt</label>
+                    <div class="d-flex flex-wrap gap-2 mt-1">
+                        <span class="badge bg-dark fs-6 px-3 py-2" th:each="t : ${booking.tickets}" th:text="${t.seatCode}"></span>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <label class="text-muted small">Tổng tiền thanh toán</label>
+                    <div class="h4 text-danger fw-bold mb-0" th:text="${#numbers.formatDecimal(booking.totalAmount, 0, 'COMMA', 0, 'POINT')} + 'đ'"></div>
+                </div>
+            </div>
+
+            <hr class="my-3">
+
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <a class="btn btn-outline-secondary" th:href="@{/admin/bookings}">← Quay lại danh sách</a>
+
+                <div class="d-flex gap-2">
+                    <!-- Xác nhận đơn PENDING -> CONFIRMED -->
+                    <form th:if="${booking.status.name() == 'PENDING'}" method="post" th:action="@{/admin/bookings/{id}/confirm(id=${booking.bookingId})}">
+                        <button class="btn btn-success fw-bold px-3">✓ Xác nhận duyệt đơn</button>
+                    </form>
+
+                    <!-- Huỷ đơn -->
+                    <form th:if="${booking.status.name() != 'CANCELLED'}" method="post" th:action="@{/admin/bookings/{id}/cancel(id=${booking.bookingId})}"
+                          onsubmit="return confirm('Bạn có chắc chắn muốn huỷ đơn đặt vé này?');">
+                        <button class="btn btn-outline-danger">Huỷ đơn này</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </main>
 <footer th:replace="~{fragments/layout :: footer}"></footer>

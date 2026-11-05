@@ -1,43 +1,150 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="vi">
-<head th:replace="~{fragments/layout :: head('Chọn ghế')}"></head>
+<head th:replace="~{fragments/layout :: head('Chọn ghế xem phim')}"></head>
 <body>
 <nav th:replace="~{fragments/layout :: navbar}"></nav>
 <main class="container py-4" th:with="s=${seatMap.showtime}">
     <div th:replace="~{fragments/layout :: flash}"></div>
-    <h3 th:text="${s.movie.title}"></h3>
-    <p class="text-muted"
-       th:text="|${#temporals.format(s.startTime, 'dd/MM/yyyy HH:mm')} · ${s.room.roomName} (${s.room.roomType.label}) · ${#numbers.formatDecimal(s.ticketPrice, 0, 'COMMA', 0, 'POINT')}đ/vé|"></p>
 
-    <form method="post" th:action="@{/customer/bookings}">
-        <input type="hidden" name="showtimeId" th:value="${s.showtimeId}">
-        <div class="screen py-1">MÀN HÌNH</div>
-        <div class="seat-grid">
-            <div class="seat-row" th:each="row : ${seatMap.rowLabels}">
-                <span class="row-label" th:text="${row}"></span>
-                <span th:each="n : ${#numbers.sequence(1, seatMap.seatsPerRow)}"
-                      th:with="code=${row + n}"
-                      class="seat" th:classappend="${seatMap.isSold(code)} ? 'sold'">
-                    <input type="checkbox" name="seatCodes" th:id="${code}" th:value="${code}"
-                           th:disabled="${seatMap.isSold(code)}">
-                    <label th:for="${code}" th:text="${code}"></label>
-                </span>
+    <div class="row g-4">
+        <!-- Cột trái: Sơ đồ ghế và màn hình -->
+        <div class="col-lg-8">
+            <div class="cinema-card">
+                <div class="cinema-card-header d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="mb-1 text-primary fw-bold" th:text="${s.movie.title}"></h5>
+                        <small class="text-muted" th:text="|Phòng: ${s.room.roomName} (${s.room.roomType.label}) · Suất: ${#temporals.format(s.startTime, 'dd/MM/yyyy HH:mm')}|"></small>
+                    </div>
+                    <span class="badge bg-danger" th:text="${s.movie.ageRating}"></span>
+                </div>
+                <div class="cinema-card-body">
+                    <!-- Màn hình chiếu -->
+                    <div class="screen-container">
+                        <div class="screen">MÀN HÌNH</div>
+                        <small class="text-muted fst-italic">Ánh sáng hướng về phía khán giả</small>
+                    </div>
+
+                    <form id="bookingForm" method="post" th:action="@{/customer/bookings}">
+                        <input type="hidden" name="showtimeId" th:value="${s.showtimeId}">
+
+                        <!-- Lưới ghế -->
+                        <div class="seat-grid-wrapper">
+                            <div class="seat-grid">
+                                <div class="seat-row" th:each="row : ${seatMap.rowLabels}">
+                                    <span class="row-label" th:text="${row}"></span>
+                                    <span th:each="n : ${#numbers.sequence(1, seatMap.seatsPerRow)}"
+                                          th:with="code=${row + n}"
+                                          class="seat" th:classappend="${seatMap.isSold(code)} ? 'sold'">
+                                        <input type="checkbox" name="seatCodes" th:id="${code}" th:value="${code}"
+                                               th:disabled="${seatMap.isSold(code)}">
+                                        <label th:for="${code}" th:text="${code}" th:title="${seatMap.isSold(code)} ? 'Ghế đã bán' : 'Ghế trống'"></label>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Chú thích loại ghế -->
+                        <div class="seat-legend">
+                            <div class="legend-item">
+                                <div class="legend-box available"></div>
+                                <span>Ghế trống</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-box selected"></div>
+                                <span>Đang chọn</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-box sold"></div>
+                                <span>Đã bán</span>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
-        <p class="mt-3 small text-muted">Ô xám: ghế đã bán · Tối đa 8 ghế mỗi đơn</p>
-        <p>Đã chọn: <strong id="count">0</strong> ghế · Tạm tính: <strong id="total">0</strong>đ</p>
-        <button class="btn btn-success">Đặt vé</button>
-        <a class="btn btn-secondary" th:href="@{/}">Quay lại</a>
-    </form>
+
+        <!-- Cột phải: Thông tin đơn & Tạm tính -->
+        <div class="col-lg-4">
+            <div class="cinema-card sticky-top" style="top: 20px;">
+                <div class="cinema-card-header">
+                    <h6 class="mb-0 fw-bold">Thông tin đặt vé</h6>
+                </div>
+                <div class="cinema-card-body">
+                    <ul class="list-unstyled mb-3">
+                        <li class="mb-2"><strong>Phim:</strong> <span th:text="${s.movie.title}"></span></li>
+                        <li class="mb-2"><strong>Thời lượng:</strong> <span th:text="|${s.movie.duration} phút|"></span></li>
+                        <li class="mb-2"><strong>Phòng:</strong> <span th:text="${s.room.roomName}"></span></li>
+                        <li class="mb-2"><strong>Suất chiếu:</strong> <span th:text="${#temporals.format(s.startTime, 'HH:mm · dd/MM/yyyy')}"></span></li>
+                        <li class="mb-2"><strong>Giá vé niêm yết:</strong> <span class="text-danger fw-bold" th:text="${#numbers.formatDecimal(s.ticketPrice, 0, 'COMMA', 0, 'POINT')} + 'đ'"></span></li>
+                    </ul>
+
+                    <hr class="my-3">
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Ghế bạn đã chọn:</label>
+                        <div id="selectedSeatsBadges" class="d-flex flex-wrap gap-1 min-vh-25">
+                            <span class="text-muted small fst-italic">Chưa có ghế nào được chọn</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-light p-3 rounded mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-muted">Số lượng:</span>
+                            <span><strong id="count">0</strong> ghế (tối đa 8)</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted">Tổng tạm tính:</span>
+                            <span class="h5 mb-0 text-danger fw-bold"><span id="total">0</span>đ</span>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" form="bookingForm" class="btn btn-success py-2 fw-bold">
+                            Xác nhận đặt vé
+                        </button>
+                        <a class="btn btn-outline-secondary" th:href="@{/movies/{id}(id=${s.movie.movieId})}">
+                            Quay lại thông tin phim
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </main>
 <footer th:replace="~{fragments/layout :: footer}"></footer>
-<!-- Chỉ để hiển thị tạm tính; tổng tiền thật được TÍNH LẠI ở server -->
+
 <script th:inline="javascript">
     const price = /*[[${seatMap.showtime.ticketPrice}]]*/ 0;
-    document.querySelectorAll('input[name=seatCodes]').forEach(cb => cb.addEventListener('change', () => {
-        const n = document.querySelectorAll('input[name=seatCodes]:checked').length;
-        document.getElementById('count').textContent = n;
-        document.getElementById('total').textContent = (n * price).toLocaleString('vi-VN');
+    const checkboxes = document.querySelectorAll('input[name=seatCodes]');
+    const countEl = document.getElementById('count');
+    const totalEl = document.getElementById('total');
+    const badgesContainer = document.getElementById('selectedSeatsBadges');
+
+    checkboxes.forEach(cb => cb.addEventListener('change', () => {
+        const checkedList = Array.from(document.querySelectorAll('input[name=seatCodes]:checked'));
+        const n = checkedList.length;
+
+        if (n > 8) {
+            alert('Mỗi đơn đặt vé tối đa 8 ghế!');
+            cb.checked = false;
+            return;
+        }
+
+        countEl.textContent = n;
+        totalEl.textContent = (n * price).toLocaleString('vi-VN');
+
+        // Render badges
+        badgesContainer.innerHTML = '';
+        if (n === 0) {
+            badgesContainer.innerHTML = '<span class="text-muted small fst-italic">Chưa có ghế nào được chọn</span>';
+        } else {
+            checkedList.forEach(input => {
+                const badge = document.createElement('span');
+                badge.className = 'badge bg-success p-2';
+                badge.textContent = input.value;
+                badgesContainer.appendChild(badge);
+            });
+        }
     }));
 </script>
 </body>
