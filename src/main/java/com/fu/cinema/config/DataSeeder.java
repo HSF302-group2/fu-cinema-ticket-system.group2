@@ -34,6 +34,7 @@ public class DataSeeder implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... args) {
+        updateMoviePosters();
         if (accountRepository.count() > 0) {
             return;
         }
@@ -211,18 +212,27 @@ public class DataSeeder implements CommandLineRunner {
     ) {
         Movie m = new Movie();
         m.setTitle(title);
+        m.setDescription("Mô tả cho phim " + title);
         m.setDirector(director);
         m.setDuration(duration);
         m.setAgeRating(rating);
         m.setGenre(genre);
         m.setStatus(status);
         m.setReleaseDate(LocalDate.now().plusDays(releaseOffsetDays));
-        m.setDescription("Nội dung phim " + title + ".");
-        m.setPosterUrl(
-                "https://placehold.co/300x450?text=" + title.replace(' ', '+')
-        );
+        long count = movieRepository.count() + 1;
+        m.setPosterUrl("/images/posters/m" + count + ".jpg");
 
         return movieRepository.save(m);
+    }
+
+    private void updateMoviePosters() {
+        java.util.List<Movie> allMovies = movieRepository.findAll();
+        for (Movie m : allMovies) {
+            if (m.getPosterUrl() == null || m.getPosterUrl().contains("placehold.co")) {
+                m.setPosterUrl("/images/posters/m" + m.getMovieId() + ".jpg");
+                movieRepository.save(m);
+            }
+        }
     }
 
     private Showtime showtime(

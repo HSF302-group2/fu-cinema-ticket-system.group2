@@ -10,7 +10,9 @@ import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 import javafx.util.Duration;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +21,7 @@ import java.time.format.DateTimeFormatter;
 
 @Component
 @Scope("prototype")
+@RequiredArgsConstructor
 public class MainController {
 
     private static final DateTimeFormatter CLOCK =
@@ -38,14 +41,6 @@ public class MainController {
 
     private Timeline clock;
 
-    public MainController(
-            SceneManager sceneManager,
-            DesktopSession session
-    ) {
-        this.sceneManager = sceneManager;
-        this.session = session;
-    }
-
     @FXML
     private void initialize() {
         session.requireAdmin();
@@ -57,7 +52,6 @@ public class MainController {
                 )
         );
 
-        // Tải màn hình đầu tiên trước khi bắt đầu đồng hồ.
         onDashboard();
 
         updateClock();
@@ -71,46 +65,58 @@ public class MainController {
 
         clock.setCycleCount(Animation.INDEFINITE);
         clock.play();
+
+        // Dừng đồng hồ khi MainController bị tháo khỏi Scene.
+        root.sceneProperty().addListener((obs, oldScene, newScene) -> {
+            if (newScene == null && clock != null) {
+                clock.stop();
+            }
+        });
     }
 
     @FXML
     private void onDashboard() {
-        sceneManager.showIn(root, View.DASHBOARD);
+        show(View.DASHBOARD);
     }
 
     @FXML
     private void onCounterSale() {
-        sceneManager.showIn(root, View.COUNTER_SALE);
+        show(View.COUNTER_SALE);
     }
 
     @FXML
     private void onBooking() {
-        sceneManager.showIn(root, View.BOOKING);
+        show(View.BOOKING);
     }
 
     @FXML
     private void onGenre() {
-        sceneManager.showIn(root, View.GENRE);
+        show(View.GENRE);
     }
 
     @FXML
     private void onMovie() {
-        sceneManager.showIn(root, View.MOVIE);
+        show(View.MOVIE);
     }
 
     @FXML
     private void onSchedule() {
-        sceneManager.showIn(root, View.SCHEDULE);
+        show(View.SCHEDULE);
     }
 
     @FXML
     private void onReport() {
-        sceneManager.showIn(root, View.REPORT);
+        show(View.REPORT);
     }
 
     @FXML
     private void onLogout() {
         session.logout();
+
+        if (clock != null) {
+            clock.stop();
+        }
+
         sceneManager.switchTo(View.LOGIN);
     }
 
@@ -127,5 +133,32 @@ public class MainController {
 
     private void updateClock() {
         lblClock.setText(LocalDateTime.now().format(CLOCK));
+    }
+
+    /**
+     * Load child screen into center.
+     * Display placeholder if the FXML has not been implemented.
+     */
+    private void show(View view) {
+        if (getClass().getResource(view.path()) == null) {
+            root.setCenter(placeholder(view));
+            return;
+        }
+
+        sceneManager.showIn(root, view);
+    }
+
+    private VBox placeholder(View view) {
+        Label title = new Label(view.title());
+        title.getStyleClass().add("page-title");
+
+        Label note = new Label(
+                "Màn hình này chưa được triển khai."
+        );
+
+        VBox box = new VBox(title, note);
+        box.getStyleClass().add("page");
+
+        return box;
     }
 }

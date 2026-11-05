@@ -1,53 +1,126 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="vi">
-<head th:replace="~{fragments/layout :: head('Báo cáo')}"></head>
+<head th:replace="~{fragments/layout :: head('Báo cáo doanh thu bán vé')}"></head>
 <body>
 <nav th:replace="~{fragments/layout :: navbar}"></nav>
 <main class="container py-4">
-    <h3 class="mb-3">Báo cáo doanh thu bán vé</h3>
     <div th:replace="~{fragments/layout :: flash}"></div>
-    <form class="row g-2 mb-4" method="get" th:action="@{/admin/reports}">
-        <div class="col-md-4"><label class="form-label">Từ ngày</label>
-            <input type="date" class="form-control" name="startDate" th:value="${startDate}"></div>
-        <div class="col-md-4"><label class="form-label">Đến ngày</label>
-            <input type="date" class="form-control" name="endDate" th:value="${endDate}"></div>
-        <div class="col-md-4 d-grid align-self-end"><button class="btn btn-primary">Xem báo cáo</button></div>
-    </form>
+
+    <div class="cinema-card mb-3">
+        <div class="cinema-card-header">
+            <h5 class="mb-0 fw-bold">📈 Báo cáo thống kê doanh thu bán vé</h5>
+        </div>
+        <div class="cinema-card-body">
+            <form class="row g-3 align-items-end" method="get" th:action="@{/admin/reports}">
+                <div class="col-md-4">
+                    <label class="form-label fw-bold">Từ ngày (StartDate) <span class="text-danger">*</span></label>
+                    <input type="date" class="form-control" name="startDate" th:value="${startDate}" required>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-bold">Đến ngày (EndDate) <span class="text-danger">*</span></label>
+                    <input type="date" class="form-control" name="endDate" th:value="${endDate}" required>
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-primary w-100 fw-bold py-2">📊 Xuất dữ liệu thống kê</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <th:block th:if="${report != null}">
-        <p th:if="${report.empty}" class="text-muted">Không có dữ liệu trong khoảng thời gian đã chọn.</p>
+        <div th:if="${report.empty}" class="alert alert-info text-center py-4">
+            <h6 class="mb-1 fw-bold">Không có dữ liệu giao dịch</h6>
+            <p class="mb-0 text-muted">Không phát sinh đơn đặt vé nào được xác nhận trong khoảng thời gian đã chọn.</p>
+        </div>
+
         <th:block th:unless="${report.empty}">
+            <!-- 3 Thẻ tổng kết doanh thu -->
             <div class="row g-3 mb-4">
-                <div class="col-md-4"><div class="card card-body"><div class="text-muted">Tổng số đơn</div>
-                    <div class="fs-3 fw-bold" th:text="${report.totalBookings}"></div></div></div>
-                <div class="col-md-4"><div class="card card-body"><div class="text-muted">Tổng số vé</div>
-                    <div class="fs-3 fw-bold" th:text="${report.totalTickets}"></div></div></div>
-                <div class="col-md-4"><div class="card card-body"><div class="text-muted">Tổng doanh thu</div>
-                    <div class="fs-3 fw-bold" th:text="${#numbers.formatDecimal(report.totalRevenue, 0, 'COMMA', 0, 'POINT')} + 'đ'"></div></div></div>
+                <div class="col-md-4">
+                    <div class="card stat-card border-0 p-3 bg-light">
+                        <div class="text-muted small fw-bold text-uppercase">Tổng số đơn thành công</div>
+                        <div class="fs-2 fw-bold text-primary mt-1" th:text="${report.totalBookings}"></div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card stat-card border-0 p-3 bg-light">
+                        <div class="text-muted small fw-bold text-uppercase">Tổng số vé đã bán</div>
+                        <div class="fs-2 fw-bold text-success mt-1" th:text="${report.totalTickets}"></div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card stat-card border-0 p-3 bg-light">
+                        <div class="text-muted small fw-bold text-uppercase">Tổng doanh thu kỳ này</div>
+                        <div class="fs-2 fw-bold text-danger mt-1" th:text="${#numbers.formatDecimal(report.totalRevenue, 0, 'COMMA', 0, 'POINT')} + 'đ'"></div>
+                    </div>
+                </div>
             </div>
 
-            <h5>(a) Doanh thu theo phim (giảm dần)</h5>
-            <table class="table table-sm">
-                <thead class="table-light"><tr><th>#</th><th>Phim</th><th>Số vé</th><th>Doanh thu</th></tr></thead>
-                <tbody><tr th:each="r, st : ${report.revenueByMovie}">
-                    <td th:text="${st.count}"></td>
-                    <td th:text="${r.title}"></td>
-                    <td th:text="${r.ticketCount}"></td>
-                    <td th:text="${#numbers.formatDecimal(r.revenue, 0, 'COMMA', 0, 'POINT')} + 'đ'"></td>
-                </tr></tbody>
-            </table>
+            <!-- (a) Doanh thu theo phim (giảm dần) -->
+            <div class="cinema-card mb-4">
+                <div class="cinema-card-header">
+                    <h6 class="mb-0 fw-bold">🏆 (a) Xếp hạng doanh thu theo phim (Sắp xếp giảm dần)</h6>
+                </div>
+                <div class="cinema-card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                            <tr>
+                                <th class="ps-3" style="width: 60px;">Xếp hạng</th>
+                                <th>Tên phim</th>
+                                <th class="text-center">Số vé đã bán</th>
+                                <th class="text-end pe-3">Doanh thu thu về</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="r, st : ${report.revenueByMovie}">
+                                <td class="ps-3 fw-bold">
+                                    <span class="badge rounded-pill bg-dark" th:text="|#${st.count}|"></span>
+                                </td>
+                                <td><strong th:text="${r.title}"></strong></td>
+                                <td class="text-center">
+                                    <span class="badge bg-light text-dark border px-3" th:text="|${r.ticketCount} vé|"></span>
+                                </td>
+                                <td class="text-end pe-3 fw-bold text-danger" th:text="${#numbers.formatDecimal(r.revenue, 0, 'COMMA', 0, 'POINT')} + 'đ'"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
 
-            <h5 class="mt-4">(b) Đơn đã xác nhận trong kỳ (mới nhất trước)</h5>
-            <table class="table table-sm">
-                <thead class="table-light"><tr><th>#</th><th>Ngày đặt</th><th>Khách hàng</th><th>Phim</th><th>Tổng tiền</th></tr></thead>
-                <tbody><tr th:each="b : ${report.bookings}">
-                    <td><a th:href="@{/admin/bookings/{id}(id=${b.bookingId})}" th:text="${b.bookingId}"></a></td>
-                    <td th:text="${#temporals.format(b.bookingDate, 'dd/MM/yyyy HH:mm')}"></td>
-                    <td th:text="${b.customer.fullName}"></td>
-                    <td th:text="${b.showtime.movie.title}"></td>
-                    <td th:text="${#numbers.formatDecimal(b.totalAmount, 0, 'COMMA', 0, 'POINT')} + 'đ'"></td>
-                </tr></tbody>
-            </table>
+            <!-- (b) Danh sách đơn đã xác nhận trong kỳ -->
+            <div class="cinema-card">
+                <div class="cinema-card-header">
+                    <h6 class="mb-0 fw-bold">📋 (b) Danh sách đơn vé xác nhận trong kỳ (Mới nhất trước)</h6>
+                </div>
+                <div class="cinema-card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                            <tr>
+                                <th class="ps-3">Mã đơn</th>
+                                <th>Thời gian đặt</th>
+                                <th>Khách hàng</th>
+                                <th>Phim chiếu</th>
+                                <th class="text-end pe-3">Số tiền</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="b : ${report.bookings}">
+                                <td class="ps-3">
+                                    <a class="fw-bold text-decoration-none" th:href="@{/admin/bookings/{id}(id=${b.bookingId})}" th:text="|#${b.bookingId}|"></a>
+                                </td>
+                                <td class="small" th:text="${#temporals.format(b.bookingDate, 'dd/MM/yyyy HH:mm')}"></td>
+                                <td th:text="${b.customer.fullName}"></td>
+                                <td th:text="${b.showtime.movie.title}"></td>
+                                <td class="text-end pe-3 fw-bold text-danger" th:text="${#numbers.formatDecimal(b.totalAmount, 0, 'COMMA', 0, 'POINT')} + 'đ'"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </th:block>
     </th:block>
 </main>

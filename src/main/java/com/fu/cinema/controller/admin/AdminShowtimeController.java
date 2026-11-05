@@ -21,7 +21,7 @@ import java.time.LocalDate;
 @Controller
 @RequestMapping("/admin/showtimes")
 @RequiredArgsConstructor
-public class AdminShowtimeController {
+public class    AdminShowtimeController {
 
     private static final String FORM_VIEW = "admin/showtimes/form";
 
