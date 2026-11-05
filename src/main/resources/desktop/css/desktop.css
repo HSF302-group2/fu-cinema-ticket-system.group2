@@ -22,3 +22,17 @@
 .login .button {
     -fx-padding: 10 24;
 }
+
+/* Seat Map Styling */
+.screen          { -fx-background-color: #9ca3af; -fx-text-fill: white; -fx-alignment: center; -fx-padding: 4; -fx-font-weight: bold; }
+.seat            { -fx-min-width: 34; -fx-min-height: 30; -fx-background-color: #e5e7eb; -fx-background-radius: 6 6 2 2; -fx-font-size: 11px; }
+.seat:hover      { -fx-background-color: #d1d5db; }
+.seat:selected   { -fx-background-color: #16a34a; -fx-text-fill: white; }
+.seat:sold       { -fx-background-color: #6b7280; -fx-text-fill: white; -fx-opacity: 1; }
+.legend-swatch   { -fx-min-width: 16; -fx-min-height: 16; -fx-background-radius: 3; }
+.legend-free     { -fx-background-color: #e5e7eb; }
+.legend-selected { -fx-background-color: #16a34a; }
+.legend-sold     { -fx-background-color: #6b7280; }
+.row-label       { -fx-font-weight: bold; -fx-padding: 4; -fx-alignment: center; }
+.btn-primary     { -fx-background-color: #e50914; -fx-text-fill: white; -fx-font-weight: bold; }
+.btn-primary:hover { -fx-background-color: #b91c1c; }
