@@ -122,10 +122,18 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <!-- [TODO 33] Giữ entry point web khi đóng gói ứng dụng -->
-                <configuration>
-                    <mainClass>com.fu.cinema.FuCinemaTicketsSystemApplication</mainClass>
-                </configuration>
+                <executions>
+                    <!-- [TODO 33] Chỉ áp mainClass cho goal repackage (đóng gói).
+                         id "repackage" trùng execution của spring-boot-starter-parent.
+                         Không đặt mainClass ở cấp plugin, nếu không sẽ đè lên
+                         -Dspring-boot.run.main-class khi chạy DesktopLauncher. -->
+                    <execution>
+                        <id>repackage</id>
+                        <configuration>
+                            <mainClass>com.fu.cinema.FuCinemaTicketsSystemApplication</mainClass>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
