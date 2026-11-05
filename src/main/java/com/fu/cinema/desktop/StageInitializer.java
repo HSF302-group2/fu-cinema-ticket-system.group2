@@ -1,24 +1,24 @@
 package com.fu.cinema.desktop;
 
-import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.stage.Stage;
+import com.fu.cinema.desktop.navigation.SceneManager;
+import com.fu.cinema.desktop.navigation.View;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
 @Component
-public class StageInitializer
-        implements ApplicationListener<StageReadyEvent> {
+@RequiredArgsConstructor
+public class StageInitializer implements ApplicationListener<StageReadyEvent> {
+
+    private final SceneManager sceneManager;                 // TODO 34
 
     @Override
     public void onApplicationEvent(StageReadyEvent event) {
-        Stage stage = event.getStage();
+        // init() tạo Scene, nạp desktop.css và tự gọi stage.show()
+        sceneManager.init(event.getStage());
 
-        stage.setTitle("FU Cinema Desktop");
-        stage.setScene(
-                new Scene(new Label("FU Cinema Desktop"), 800, 600)
-        );
-
-        stage.show();
+        // TODO 36: đổi thành View.LOGIN khi đã có login.fxml.
+        // Tạm vào thẳng khung chính để kiểm tra điều hướng của TODO 34.
+        sceneManager.switchTo(View.MAIN);
     }
 }
