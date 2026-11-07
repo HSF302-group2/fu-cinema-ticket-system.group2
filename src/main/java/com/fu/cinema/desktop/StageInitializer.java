@@ -2,18 +2,15 @@ package com.fu.cinema.desktop;
 
 import com.fu.cinema.desktop.navigation.SceneManager;
 import com.fu.cinema.desktop.navigation.View;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
 @Component
-public class StageInitializer
-        implements ApplicationListener<StageReadyEvent> {
+@RequiredArgsConstructor
+public class StageInitializer implements ApplicationListener<StageReadyEvent> {
 
     private final SceneManager sceneManager;
-
-    public StageInitializer(SceneManager sceneManager) {
-        this.sceneManager = sceneManager;
-    }
 
     @Override
     public void onApplicationEvent(StageReadyEvent event) {
