@@ -22,3 +22,25 @@
 .login .button {
     -fx-padding: 10 24;
 }
+
+.kpi {
+    -fx-background-color: white;
+    -fx-padding: 16;
+    -fx-background-radius: 8;
+    -fx-border-color: #e5e7eb;
+    -fx-border-radius: 8;
+    -fx-border-width: 1;
+}
+
+/* Sơ đồ ghế (TODO 42) */
+.seat-map        { -fx-padding: 16; }
+.screen          { -fx-background-color: #9ca3af; -fx-text-fill: white; -fx-alignment: center; -fx-padding: 6; -fx-font-weight: bold; -fx-background-radius: 4; }
+.seat            { -fx-min-width: 34; -fx-min-height: 30; -fx-background-color: #e5e7eb; -fx-background-radius: 6 6 2 2; }
+.seat:hover      { -fx-background-color: #d1d5db; }
+.seat:selected   { -fx-background-color: #16a34a; -fx-text-fill: white; }
+.seat:sold       { -fx-background-color: #6b7280; -fx-text-fill: white; -fx-opacity: 1; }
+.row-label       { -fx-font-weight: bold; -fx-min-width: 20; -fx-alignment: center; }
+.legend-swatch   { -fx-min-width: 16; -fx-min-height: 16; -fx-background-radius: 3; }
+.legend-free     { -fx-background-color: #e5e7eb; }
+.legend-selected { -fx-background-color: #16a34a; }
+.legend-sold     { -fx-background-color: #6b7280; }
