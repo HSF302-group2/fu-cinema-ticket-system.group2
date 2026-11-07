@@ -8,3 +8,4 @@ public record MovieItem(Long id, String title, int duration, AgeRating ageRating
         return title + " (" + duration + "')";
     }
 }
+

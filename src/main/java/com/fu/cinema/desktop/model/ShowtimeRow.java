@@ -7,3 +7,4 @@ import java.time.LocalDateTime;
 
 public record ShowtimeRow(Long id, String movieTitle, String roomName, LocalDateTime start,
                           LocalDateTime end, BigDecimal price, ShowtimeStatus status) {}
+

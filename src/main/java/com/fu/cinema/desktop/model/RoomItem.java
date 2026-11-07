@@ -6,3 +6,4 @@ public record RoomItem(Long id, String name) {
         return name;
     }
 }
+

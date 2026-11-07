@@ -7,3 +7,4 @@ import java.util.Set;
 
 public record SeatMapData(Long showtimeId, String movieTitle, String roomName, LocalDateTime startTime,
                           BigDecimal price, List<String> rowLabels, int seatsPerRow, Set<String> soldSeats) {}
+

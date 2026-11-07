@@ -8,3 +8,4 @@ public record RoomRow(Long id, String name, RoomType type, int rows, int seatsPe
         return rows * seatsPerRow;
     }
 }
+

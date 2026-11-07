@@ -300,3 +300,4 @@ public class ScheduleController {
         loadShowtimes(0);
     }
 }
+

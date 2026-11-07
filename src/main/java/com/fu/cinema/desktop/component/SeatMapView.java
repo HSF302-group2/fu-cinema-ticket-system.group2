@@ -98,3 +98,4 @@ public class SeatMapView extends VBox {
         return new Label(text, swatch);
     }
 }
+
