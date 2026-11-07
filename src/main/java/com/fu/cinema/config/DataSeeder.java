@@ -34,20 +34,35 @@ public class DataSeeder implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... args) {
-        updateMoviePosters();
-        if (accountRepository.count() > 0) {
+        // Luôn đảm bảo tài khoản admin chuẩn tồn tại với mật khẩu Admin@123
+        Account admin = accountRepository.findByUsername("admin@fucinema.vn").orElse(null);
+        if (admin == null) {
+            accountRepository.save(new Account(
+                    "admin@fucinema.vn",
+                    passwordEncoder.encode("Admin@123"),
+                    Role.ADMIN,
+                    AccountStatus.ACTIVE
+            ));
+            log.info(">>> Created default admin: admin@fucinema.vn / Admin@123");
+        } else {
+            admin.setPassword(passwordEncoder.encode("Admin@123"));
+            admin.setRole(Role.ADMIN);
+            admin.setStatus(AccountStatus.ACTIVE);
+            accountRepository.save(admin);
+            log.info(">>> Reset default admin password: admin@fucinema.vn / Admin@123");
+        }
+
+        try {
+            updateMoviePosters();
+        } catch (Exception e) {
+            log.warn("updateMoviePosters skipped: {}", e.getMessage());
+        }
+
+        if (accountRepository.count() > 1) {
             return;
         }
 
         log.info(">>> Seeding sample data...");
-
-        // Accounts and customers
-        accountRepository.save(new Account(
-                "admin@fucinema.vn",
-                passwordEncoder.encode("Admin@123"),
-                Role.ADMIN,
-                AccountStatus.ACTIVE
-        ));
 
         Customer an = customer(
                 "Nguyen Van An",
