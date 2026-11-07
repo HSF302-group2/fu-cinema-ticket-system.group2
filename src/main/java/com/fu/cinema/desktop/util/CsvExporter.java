@@ -31,8 +31,10 @@ public final class CsvExporter {
             w.write("Mã đơn,Ngày đặt,Khách hàng,Phim,Tổng tiền");
             w.newLine();
             for (ReportBookingRow b : d.bookings()) {
-                w.write(String.join(",", b.id().toString(), b.bookingDate().toString(), csv(b.customerName()),
-                        csv(b.movieTitle()), b.total().toPlainString()));
+                String dateStr = b.bookingDate() != null ? b.bookingDate().toString() : "";
+                String totalStr = b.total() != null ? b.total().toPlainString() : "0";
+                w.write(String.join(",", String.valueOf(b.id()), dateStr, csv(b.customerName()),
+                        csv(b.movieTitle()), totalStr));
                 w.newLine();
             }
             w.write("TỔNG,%d đơn,%d vé,,%s".formatted(d.totalBookings(), d.totalTickets(), d.totalRevenue().toPlainString()));

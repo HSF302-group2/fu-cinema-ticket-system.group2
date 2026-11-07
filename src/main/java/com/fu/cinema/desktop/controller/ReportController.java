@@ -181,6 +181,10 @@ public class ReportController {
 
         FileChooser fc = new FileChooser();
         fc.setTitle("Xuất báo cáo doanh thu CSV");
+        File downloadsDir = new File(System.getProperty("user.home"), "Downloads");
+        if (downloadsDir.exists() && downloadsDir.isDirectory()) {
+            fc.setInitialDirectory(downloadsDir);
+        }
         fc.setInitialFileName("doanh-thu_%s_%s.csv".formatted(snapshot.start(), snapshot.end()));
         fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV (*.csv)", "*.csv"));
 
