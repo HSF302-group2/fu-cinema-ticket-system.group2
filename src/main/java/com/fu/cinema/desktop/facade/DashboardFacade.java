@@ -30,3 +30,4 @@ public class DashboardFacade {
                 bookingService.countPending(), rooms);
     }
 }
+

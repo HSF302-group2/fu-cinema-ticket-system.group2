@@ -64,3 +64,4 @@ public class DashboardController {
         lblUpdated.setText("Cập nhật lúc " + LocalTime.now().withNano(0));
     }
 }
+
