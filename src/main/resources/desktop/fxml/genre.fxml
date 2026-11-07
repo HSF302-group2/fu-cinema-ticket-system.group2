@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox styleClass="page" spacing="16" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.fu.cinema.desktop.controller.GenreController">
+    <HBox alignment="CENTER_LEFT" spacing="16">
+        <VBox spacing="4" HBox.hgrow="ALWAYS">
+            <Label text="Quản lý Thể loại phim" styleClass="page-title"/>
+            <Label text="Danh sách các thể loại phim phục vụ phân loại và xếp lịch" styleClass="page-subtitle"/>
+        </VBox>
+        <Button text="🔄 Tải lại" onAction="#onReload" styleClass="button"/>
+    </HBox>
+
+    <SplitPane dividerPositions="0.6" VBox.vgrow="ALWAYS" style="-fx-background-color: transparent;">
+        <VBox spacing="8" styleClass="card">
+            <Label text="Danh sách thể loại" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+            <TableView fx:id="table" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="colId" text="ID" prefWidth="60"/>
+                    <TableColumn fx:id="colName" text="Tên thể loại" prefWidth="180"/>
+                    <TableColumn fx:id="colDesc" text="Mô tả" prefWidth="300"/>
+                </columns>
+                <columnResizePolicy>
+                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                </columnResizePolicy>
+            </TableView>
+        </VBox>
+
+        <VBox fx:id="formBox" spacing="12" styleClass="card" prefWidth="340">
+            <Label fx:id="lblFormTitle" text="Thêm thể loại mới" style="-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: #111827;"/>
+            <Separator/>
+            <VBox spacing="4">
+                <Label text="Tên thể loại (*):" style="-fx-font-weight: bold;"/>
+                <TextField fx:id="tfName" promptText="Nhập tên thể loại..."/>
+            </VBox>
+            <VBox spacing="4">
+                <Label text="Mô tả (*):" style="-fx-font-weight: bold;"/>
+                <TextArea fx:id="taDesc" promptText="Nhập mô tả ngắn gọn..." prefRowCount="5" wrapText="true"/>
+            </VBox>
+            <Separator/>
+            <HBox spacing="8">
+                <Button fx:id="btnNew" text="Làm mới form" onAction="#onNew" styleClass="button"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button fx:id="btnDelete" text="Xoá" onAction="#onDelete" styleClass="button, danger"/>
+                <Button fx:id="btnSave" text="Lưu" onAction="#onSave" styleClass="button, primary"/>
+            </HBox>
+        </VBox>
+    </SplitPane>
+</VBox>
