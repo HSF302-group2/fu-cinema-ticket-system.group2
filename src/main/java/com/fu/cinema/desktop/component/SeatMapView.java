@@ -24,19 +24,16 @@ public class SeatMapView extends VBox {
     private final ObservableList<String> selected = FXCollections.observableArrayList();
     private final ObservableList<String> selectedView = FXCollections.unmodifiableObservableList(selected);
 
-    public SeatMapView() {
+    public SeatMapView() { // constructor rỗng → dùng được trong FXML
         getStyleClass().add("seat-map");
         setSpacing(12);
         setAlignment(Pos.TOP_CENTER);
-
         Label screen = new Label("MÀN HÌNH");
         screen.getStyleClass().add("screen");
         screen.setMaxWidth(Double.MAX_VALUE);
-
         grid.setHgap(4);
         grid.setVgap(4);
         grid.setAlignment(Pos.CENTER);
-
         getChildren().addAll(screen, grid, legend());
     }
 
@@ -48,14 +45,14 @@ public class SeatMapView extends VBox {
     public void setData(SeatMapData data) {
         selected.clear();
         grid.getChildren().clear();
-        if (data == null) return;
-
+        if (data == null) {
+            return;
+        }
         for (int r = 0; r < data.rowLabels().size(); r++) {
             String row = data.rowLabels().get(r);
             Label rowLabel = new Label(row);
             rowLabel.getStyleClass().add("row-label");
             grid.add(rowLabel, 0, r);
-
             for (int c = 1; c <= data.seatsPerRow(); c++) {
                 String code = row + c; // A1, B12…
                 ToggleButton seat = new ToggleButton(String.valueOf(c));
@@ -87,7 +84,8 @@ public class SeatMapView extends VBox {
         HBox box = new HBox(16,
                 legendItem("Trống", "legend-free"),
                 legendItem("Đang chọn", "legend-selected"),
-                legendItem("Đã bán", "legend-sold"));
+                legendItem("Đã bán", "legend-sold")
+        );
         box.setAlignment(Pos.CENTER);
         return box;
     }
@@ -95,7 +93,7 @@ public class SeatMapView extends VBox {
     private Label legendItem(String text, String styleClass) {
         Region swatch = new Region();
         swatch.getStyleClass().addAll("legend-swatch", styleClass);
-        return new Label(text, swatch);
+        Label l = new Label(text, swatch);
+        return l;
     }
 }
-
