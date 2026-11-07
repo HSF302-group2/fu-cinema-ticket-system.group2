@@ -19,7 +19,7 @@ public class CinemaFxApp extends Application {
         )
                 .web(WebApplicationType.NONE)
                 .headless(false)
-                .profiles("desktop")
+                .profiles("local", "desktop")
                 .run(getParameters().getRaw().toArray(String[]::new));
     }
 
