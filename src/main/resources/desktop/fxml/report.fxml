@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.fu.cinema.desktop.controller.ReportController"
+            styleClass="page">
+    <padding>
+        <Insets top="16" right="16" bottom="16" left="16"/>
+    </padding>
+    <top>
+        <VBox spacing="12">
+            <Label text="Báo cáo doanh thu" styleClass="page-title"/>
+            <HBox spacing="12" alignment="CENTER_LEFT">
+                <Label text="Từ ngày:"/>
+                <DatePicker fx:id="dpStart" prefWidth="140"/>
+                <Label text="Đến ngày:"/>
+                <DatePicker fx:id="dpEnd" prefWidth="140"/>
+                <Button fx:id="btnGenerate" text="Xem báo cáo" onAction="#onGenerate" styleClass="button, primary"/>
+                <Button fx:id="btnExport" text="Xuất CSV" onAction="#onExport"
+                        style="-fx-background-color: #0284c7; -fx-text-fill: white; -fx-font-weight: bold;"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label fx:id="lblTotals" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #15803d;"/>
+            </HBox>
+        </VBox>
+    </top>
+    <center>
+        <TabPane tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+            <padding>
+                <Insets top="12"/>
+            </padding>
+            <Tab text="Biểu đồ thống kê">
+                <HBox spacing="16">
+                    <BarChart fx:id="chartRevenue" title="Doanh thu theo phim" HBox.hgrow="ALWAYS">
+                        <xAxis>
+                            <CategoryAxis label="Phim"/>
+                        </xAxis>
+                        <yAxis>
+                            <NumberAxis label="Doanh thu (VNĐ)"/>
+                        </yAxis>
+                    </BarChart>
+                    <PieChart fx:id="pieTickets" title="Cơ cấu vé theo phim" prefWidth="380"/>
+                </HBox>
+            </Tab>
+            <Tab text="Bảng kê đơn hàng">
+                <StackPane>
+                    <TableView fx:id="tableBookings">
+                        <columns>
+                            <TableColumn fx:id="colId" text="Mã đơn" prefWidth="80"/>
+                            <TableColumn fx:id="colDate" text="Ngày đặt" prefWidth="160"/>
+                            <TableColumn fx:id="colCustomer" text="Khách hàng" prefWidth="200"/>
+                            <TableColumn fx:id="colMovie" text="Phim" prefWidth="240"/>
+                            <TableColumn fx:id="colTotal" text="Tổng tiền" prefWidth="150"/>
+                        </columns>
+                        <columnResizePolicy>
+                            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                        </columnResizePolicy>
+                    </TableView>
+                    <Label fx:id="lblEmpty" text="Không có dữ liệu trong khoảng thời gian này"
+                           visible="false" style="-fx-font-size: 15px; -fx-text-fill: #6b7280; -fx-font-style: italic;"/>
+                </StackPane>
+            </Tab>
+        </TabPane>
+    </center>
+</BorderPane>
