@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="16" styleClass="page"
+      xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.fu.cinema.desktop.controller.ScheduleController">
+
+    <Label text="QUẢN LÝ PHÒNG &amp; SUẤT CHIẾU" styleClass="page-title"/>
+
+    <TabPane tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+        <!-- TAB 1: QUẢN LÝ PHÒNG -->
+        <Tab text="Phòng chiếu">
+            <HBox spacing="16" style="-fx-padding: 12 0 0 0;">
+                <!-- Danh sách phòng -->
+                <VBox spacing="8" HBox.hgrow="ALWAYS">
+                    <TableView fx:id="tableRooms" VBox.vgrow="ALWAYS">
+                        <columns>
+                            <TableColumn fx:id="colRoomName" text="Tên phòng" prefWidth="120"/>
+                            <TableColumn fx:id="colRoomType" text="Loại phòng" prefWidth="100"/>
+                            <TableColumn fx:id="colRoomCapacity" text="Sức chứa" prefWidth="100"/>
+                            <TableColumn fx:id="colRoomStatus" text="Trạng thái" prefWidth="120"/>
+                        </columns>
+                        <columnResizePolicy>
+                            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                        </columnResizePolicy>
+                    </TableView>
+                </VBox>
+
+                <!-- Form thêm/sửa phòng -->
+                <VBox fx:id="formRoomBox" spacing="12" prefWidth="320" style="-fx-background-color: white; -fx-padding: 16; -fx-background-radius: 8;">
+                    <Label text="Thông tin phòng chiếu" style="-fx-font-weight: bold; -fx-font-size: 15px;"/>
+                    
+                    <VBox spacing="4">
+                        <Label text="Tên phòng:"/>
+                        <TextField fx:id="tfRoomName" promptText="vd: Room 01"/>
+                    </VBox>
+
+                    <VBox spacing="4">
+                        <Label text="Loại phòng:"/>
+                        <ComboBox fx:id="cbRoomType" maxWidth="Infinity"/>
+                    </VBox>
+
+                    <HBox spacing="8">
+                        <VBox spacing="4" HBox.hgrow="ALWAYS">
+                            <Label text="Số hàng (1-26):"/>
+                            <Spinner fx:id="spRows" editable="true" maxWidth="Infinity"/>
+                        </VBox>
+                        <VBox spacing="4" HBox.hgrow="ALWAYS">
+                            <Label text="Ghế/hàng (1-30):"/>
+                            <Spinner fx:id="spSeatsPerRow" editable="true" maxWidth="Infinity"/>
+                        </VBox>
+                    </HBox>
+
+                    <VBox spacing="4">
+                        <Label text="Trạng thái:"/>
+                        <ComboBox fx:id="cbRoomStatus" maxWidth="Infinity"/>
+                    </VBox>
+
+                    <Region VBox.vgrow="ALWAYS"/>
+
+                    <HBox spacing="8">
+                        <Button text="Thêm mới" onAction="#onNewRoom" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+                        <Button fx:id="btnDeleteRoom" text="Xoá" onAction="#onDeleteRoom" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+                        <Button fx:id="btnSaveRoom" text="Lưu phòng" onAction="#onSaveRoom" styleClass="primary" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+                    </HBox>
+                </VBox>
+            </HBox>
+        </Tab>
+
+        <!-- TAB 2: QUẢN LÝ SUẤT CHIẾU -->
+        <Tab text="Suất chiếu">
+            <HBox spacing="16" style="-fx-padding: 12 0 0 0;">
+                <!-- Danh sách suất chiếu & bộ lọc -->
+                <VBox spacing="8" HBox.hgrow="ALWAYS">
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <ComboBox fx:id="cbFilterMovie" promptText="Lọc theo phim" prefWidth="180"/>
+                        <ComboBox fx:id="cbFilterRoom" promptText="Lọc theo phòng" prefWidth="130"/>
+                        <DatePicker fx:id="dpFilterDate" promptText="Lọc theo ngày" prefWidth="130"/>
+                        <Button text="Xoá bộ lọc" onAction="#onClearFilters"/>
+                    </HBox>
+
+                    <TableView fx:id="tableShowtimes" VBox.vgrow="ALWAYS">
+                        <columns>
+                            <TableColumn fx:id="colShowMovie" text="Phim" prefWidth="160"/>
+                            <TableColumn fx:id="colShowRoom" text="Phòng" prefWidth="90"/>
+                            <TableColumn fx:id="colShowStart" text="Bắt đầu" prefWidth="130"/>
+                            <TableColumn fx:id="colShowEnd" text="Kết thúc" prefWidth="130"/>
+                            <TableColumn fx:id="colShowPrice" text="Giá vé" prefWidth="100"/>
+                            <TableColumn fx:id="colShowStatus" text="Trạng thái" prefWidth="90"/>
+                        </columns>
+                        <columnResizePolicy>
+                            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                        </columnResizePolicy>
+                    </TableView>
+
+                    <Pagination fx:id="pagination" maxPageIndicatorCount="5"/>
+                </VBox>
+
+                <!-- Form thêm/sửa suất chiếu -->
+                <VBox fx:id="formShowtimeBox" spacing="12" prefWidth="340" style="-fx-background-color: white; -fx-padding: 16; -fx-background-radius: 8;">
+                    <Label text="Thông tin suất chiếu" style="-fx-font-weight: bold; -fx-font-size: 15px;"/>
+
+                    <VBox spacing="4">
+                        <Label text="Phim đang/sắp chiếu:"/>
+                        <ComboBox fx:id="cbMovie" promptText="Chọn phim" maxWidth="Infinity"/>
+                    </VBox>
+
+                    <VBox spacing="4">
+                        <Label text="Phòng hoạt động:"/>
+                        <ComboBox fx:id="cbRoom" promptText="Chọn phòng" maxWidth="Infinity"/>
+                    </VBox>
+
+                    <VBox spacing="4">
+                        <Label text="Ngày chiếu:"/>
+                        <DatePicker fx:id="dpDate" maxWidth="Infinity"/>
+                    </VBox>
+
+                    <HBox spacing="8">
+                        <VBox spacing="4" HBox.hgrow="ALWAYS">
+                            <Label text="Giờ:"/>
+                            <Spinner fx:id="spHour" editable="true" maxWidth="Infinity"/>
+                        </VBox>
+                        <VBox spacing="4" HBox.hgrow="ALWAYS">
+                            <Label text="Phút:"/>
+                            <Spinner fx:id="spMinute" editable="true" maxWidth="Infinity"/>
+                        </VBox>
+                    </HBox>
+
+                    <VBox spacing="4">
+                        <Label fx:id="lblEnd" style="-fx-text-fill: #2563eb; -fx-font-weight: bold;" text="Kết thúc (gợi ý): —"/>
+                    </VBox>
+
+                    <VBox spacing="4">
+                        <Label text="Giá vé (VNĐ):"/>
+                        <TextField fx:id="tfPrice" promptText="vd: 75000"/>
+                    </VBox>
+
+                    <Region VBox.vgrow="ALWAYS"/>
+
+                    <HBox spacing="8">
+                        <Button text="Thêm mới" onAction="#onNewShowtime" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+                        <Button fx:id="btnDeleteShowtime" text="Xoá" onAction="#onDeleteShowtime" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+                        <Button fx:id="btnSaveShowtime" text="Lưu suất" onAction="#onSaveShowtime" styleClass="primary" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+                    </HBox>
+                </VBox>
+            </HBox>
+        </Tab>
+    </TabPane>
+</VBox>
