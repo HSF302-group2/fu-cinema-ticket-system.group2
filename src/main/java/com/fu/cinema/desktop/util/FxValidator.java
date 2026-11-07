@@ -1,23 +1,28 @@
 package com.fu.cinema.desktop.util;
 
 import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import javafx.css.PseudoClass;
 import javafx.scene.control.Control;
 import javafx.scene.control.Tooltip;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Component
-@RequiredArgsConstructor
 public class FxValidator {
 
     private static final PseudoClass ERROR = PseudoClass.getPseudoClass("error");
 
-    private final Validator validator; // jakarta.validation.Validator do Spring Boot cấu hình
+    private final Validator validator;
+
+    @Autowired
+    public FxValidator(@Autowired(required = false) Validator validator) {
+        this.validator = validator != null ? validator : Validation.buildDefaultValidatorFactory().getValidator();
+    }
 
     /** @return map tên field → message (rỗng nếu hợp lệ) */
     public Map<String, String> validate(Object form) {
