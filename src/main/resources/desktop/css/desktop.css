@@ -22,3 +22,12 @@
 .login .button {
     -fx-padding: 10 24;
 }
+
+.kpi {
+    -fx-background-color: white;
+    -fx-padding: 16;
+    -fx-background-radius: 8;
+    -fx-border-color: #e5e7eb;
+    -fx-border-radius: 8;
+    -fx-border-width: 1;
+}
