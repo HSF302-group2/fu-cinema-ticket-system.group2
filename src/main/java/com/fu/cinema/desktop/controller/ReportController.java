@@ -198,22 +198,11 @@ public class ReportController {
                 ? file
                 : new File(file.getParentFile(), file.getName() + ".csv");
 
-        fxAsync.runVoid(
-                () -> {
-                    CsvExporter.write(targetFile.toPath(), snapshot);
-                    // Lưu dự phòng thêm một bản vào Downloads nếu người dùng chọn thư mục khác
-                    if (downloadsDir.exists() && downloadsDir.isDirectory()) {
-                        File backup = new File(downloadsDir, targetFile.getName());
-                        if (!backup.getAbsolutePath().equalsIgnoreCase(targetFile.getAbsolutePath())) {
-                            try {
-                                CsvExporter.write(backup.toPath(), snapshot);
-                            } catch (Exception ignored) {
-                            }
-                        }
-                    }
-                },
-                () -> AlertUtil.info("Đã xuất báo cáo thành công vào: " + targetFile.getName()),
-                btnExport
-        );
+        try {
+            CsvExporter.write(targetFile.toPath(), snapshot);
+            AlertUtil.info("Đã xuất báo cáo thành công vào: " + targetFile.getName());
+        } catch (Exception ex) {
+            AlertUtil.showError(ex);
+        }
     }
 }
