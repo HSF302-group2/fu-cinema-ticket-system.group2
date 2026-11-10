@@ -29,13 +29,17 @@ import java.util.List;
 
 @Component
 @Scope("prototype")
-@RequiredArgsConstructor
 public class ReportController {
 
     private static final DateTimeFormatter DT_FORMAT = DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy");
 
     private final ReportFacade facade;
     private final FxAsync fxAsync;
+
+    public ReportController(ReportFacade facade, FxAsync fxAsync) {
+        this.facade = facade;
+        this.fxAsync = fxAsync;
+    }
 
     @FXML
     private DatePicker dpStart;

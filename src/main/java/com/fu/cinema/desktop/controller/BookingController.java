@@ -26,13 +26,17 @@ import java.time.format.DateTimeFormatter;
 
 @Component
 @Scope("prototype")
-@RequiredArgsConstructor
 public class BookingController {
 
     private static final DateTimeFormatter DT_FORMAT = DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy");
 
     private final BookingFacade facade;
     private final FxAsync fxAsync;
+
+    public BookingController(BookingFacade facade, FxAsync fxAsync) {
+        this.facade = facade;
+        this.fxAsync = fxAsync;
+    }
 
     @FXML
     private ComboBox<StatusOption> cbStatus;

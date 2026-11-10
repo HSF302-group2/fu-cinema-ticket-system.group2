@@ -32,11 +32,15 @@ import java.util.List;
 
 @Component
 @Scope("prototype")
-@RequiredArgsConstructor
 public class CounterSaleController {
 
     private final CounterSaleFacade facade;
     private final FxAsync fxAsync;
+
+    public CounterSaleController(CounterSaleFacade facade, FxAsync fxAsync) {
+        this.facade = facade;
+        this.fxAsync = fxAsync;
+    }
 
     @FXML
     private TextField tfCustomer;
