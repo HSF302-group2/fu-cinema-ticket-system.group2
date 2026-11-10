@@ -1,54 +1,62 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="vi">
-<head th:replace="~{fragments/layout :: head('Suất chiếu')}"></head>
+<head th:replace="~{fragments/layout :: head('Lên lịch suất chiếu')}"></head>
 <body>
 <nav th:replace="~{fragments/layout :: navbar}"></nav>
-<main class="container py-4" style="max-width: 720px">
-    <h3 th:text="${form.showtimeId == null} ? 'Thêm suất chiếu' : 'Sửa suất chiếu'"></h3>
+<main class="container py-4" style="max-width: 760px">
     <div th:replace="~{fragments/layout :: flash}"></div>
-    <form method="post" th:object="${form}" novalidate class="row g-3"
-          th:action="${form.showtimeId == null} ? @{/admin/showtimes/new} : @{/admin/showtimes/{id}/edit(id=${form.showtimeId})}">
-        <div class="col-md-6">
-            <label class="form-label">Phim</label>
-            <select class="form-select" th:field="*{movieId}" th:errorclass="is-invalid">
-                <option value="">-- Chọn --</option>
-                <option th:each="m : ${movies}" th:value="${m.movieId}" th:text="|${m.title} (${m.duration}')|"></option>
-            </select>
-            <div class="invalid-feedback" th:errors="*{movieId}"></div>
+
+    <div class="cinema-card">
+        <div class="cinema-card-header">
+            <h5 class="mb-0 fw-bold" th:text="${form.showtimeId == null} ? '📅 Lên lịch suất chiếu mới' : '📅 Cập nhật suất chiếu'"></h5>
         </div>
-        <div class="col-md-6">
-            <label class="form-label">Phòng (đang hoạt động)</label>
-            <select class="form-select" th:field="*{roomId}" th:errorclass="is-invalid">
-                <option value="">-- Chọn --</option>
-                <option th:each="r : ${rooms}" th:value="${r.roomId}" th:text="|${r.roomName} (${r.roomType.label})|"></option>
-            </select>
-            <div class="invalid-feedback" th:errors="*{roomId}"></div>
+        <div class="cinema-card-body">
+            <form method="post" th:object="${form}" novalidate class="row g-3"
+                  th:action="${form.showtimeId == null} ? @{/admin/showtimes/new} : @{/admin/showtimes/{id}/edit(id=${form.showtimeId})}">
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Chọn phim <span class="text-danger">*</span></label>
+                    <select class="form-select" th:field="*{movieId}" th:errorclass="is-invalid">
+                        <option value="">-- Chọn phim đang chiếu --</option>
+                        <option th:each="m : ${movies}" th:value="${m.movieId}" th:text="|${m.title} (${m.duration} phút)|"></option>
+                    </select>
+                    <div class="invalid-feedback" th:errors="*{movieId}"></div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Phòng chiếu <span class="text-danger">*</span></label>
+                    <select class="form-select" th:field="*{roomId}" th:errorclass="is-invalid">
+                        <option value="">-- Chọn phòng hoạt động --</option>
+                        <option th:each="r : ${rooms}" th:value="${r.roomId}" th:text="|${r.roomName} (${r.roomType.label})|"></option>
+                    </select>
+                    <div class="invalid-feedback" th:errors="*{roomId}"></div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Thời gian bắt đầu <span class="text-danger">*</span></label>
+                    <input type="datetime-local" class="form-control" th:field="*{startTime}" th:errorclass="is-invalid">
+                    <div class="invalid-feedback" th:errors="*{startTime}"></div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Thời gian kết thúc</label>
+                    <input type="datetime-local" class="form-control" th:field="*{endTime}">
+                    <small class="text-muted fst-italic">Để trống: tự tính = Bắt đầu + Thời lượng + 15p dọn phòng</small>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Giá vé (VNĐ) <span class="text-danger">*</span></label>
+                    <input type="number" min="1000" step="5000" class="form-control" th:field="*{ticketPrice}" th:errorclass="is-invalid">
+                    <div class="invalid-feedback" th:errors="*{ticketPrice}"></div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Trạng thái suất chiếu</label>
+                    <select class="form-select" th:field="*{status}">
+                        <option th:each="s : ${statuses}" th:value="${s}" th:text="${s}"></option>
+                    </select>
+                </div>
+                <div class="col-12 mt-4 pt-2 border-top d-flex gap-2">
+                    <button class="btn btn-primary px-4 fw-bold">Lưu suất chiếu</button>
+                    <a class="btn btn-outline-secondary" th:href="@{/admin/showtimes}">Huỷ bỏ</a>
+                </div>
+            </form>
         </div>
-        <div class="col-md-6">
-            <label class="form-label">Bắt đầu</label>
-            <input type="datetime-local" class="form-control" th:field="*{startTime}" th:errorclass="is-invalid">
-            <div class="invalid-feedback" th:errors="*{startTime}"></div>
-        </div>
-        <div class="col-md-6">
-            <label class="form-label">Kết thúc <small class="text-muted">(để trống = thời lượng + 15 phút)</small></label>
-            <input type="datetime-local" class="form-control" th:field="*{endTime}">
-        </div>
-        <div class="col-md-6">
-            <label class="form-label">Giá vé (đ)</label>
-            <input type="number" class="form-control" th:field="*{ticketPrice}" th:errorclass="is-invalid">
-            <div class="invalid-feedback" th:errors="*{ticketPrice}"></div>
-        </div>
-        <div class="col-md-6">
-            <label class="form-label">Trạng thái</label>
-            <select class="form-select" th:field="*{status}">
-                <option th:each="s : ${statuses}" th:value="${s}" th:text="${s}"></option>
-            </select>
-        </div>
-        <div class="col-12">
-            <button class="btn btn-primary">Lưu</button>
-            <a class="btn btn-secondary" th:href="@{/admin/showtimes}">Huỷ</a>
-        </div>
-    </form>
+    </div>
 </main>
 <footer th:replace="~{fragments/layout :: footer}"></footer>
 </body>

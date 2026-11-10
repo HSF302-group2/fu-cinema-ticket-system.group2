@@ -34,19 +34,35 @@ public class DataSeeder implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... args) {
-        if (accountRepository.count() > 0) {
+        // Luôn đảm bảo tài khoản admin chuẩn tồn tại với mật khẩu Admin@123
+        Account admin = accountRepository.findByUsername("admin@fucinema.vn").orElse(null);
+        if (admin == null) {
+            accountRepository.save(new Account(
+                    "admin@fucinema.vn",
+                    passwordEncoder.encode("Admin@123"),
+                    Role.ADMIN,
+                    AccountStatus.ACTIVE
+            ));
+            log.info(">>> Created default admin: admin@fucinema.vn / Admin@123");
+        } else {
+            admin.setPassword(passwordEncoder.encode("Admin@123"));
+            admin.setRole(Role.ADMIN);
+            admin.setStatus(AccountStatus.ACTIVE);
+            accountRepository.save(admin);
+            log.info(">>> Reset default admin password: admin@fucinema.vn / Admin@123");
+        }
+
+        try {
+            updateMoviePosters();
+        } catch (Exception e) {
+            log.warn("updateMoviePosters skipped: {}", e.getMessage());
+        }
+
+        if (accountRepository.count() > 1) {
             return;
         }
 
         log.info(">>> Seeding sample data...");
-
-        // Accounts and customers
-        accountRepository.save(new Account(
-                "admin@fucinema.vn",
-                passwordEncoder.encode("Admin@123"),
-                Role.ADMIN,
-                AccountStatus.ACTIVE
-        ));
 
         Customer an = customer(
                 "Nguyen Van An",
@@ -211,18 +227,27 @@ public class DataSeeder implements CommandLineRunner {
     ) {
         Movie m = new Movie();
         m.setTitle(title);
+        m.setDescription("Mô tả cho phim " + title);
         m.setDirector(director);
         m.setDuration(duration);
         m.setAgeRating(rating);
         m.setGenre(genre);
         m.setStatus(status);
         m.setReleaseDate(LocalDate.now().plusDays(releaseOffsetDays));
-        m.setDescription("Nội dung phim " + title + ".");
-        m.setPosterUrl(
-                "https://placehold.co/300x450?text=" + title.replace(' ', '+')
-        );
+        long count = movieRepository.count() + 1;
+        m.setPosterUrl("/images/posters/m" + count + ".jpg");
 
         return movieRepository.save(m);
+    }
+
+    private void updateMoviePosters() {
+        java.util.List<Movie> allMovies = movieRepository.findAll();
+        for (Movie m : allMovies) {
+            if (m.getPosterUrl() == null || m.getPosterUrl().contains("placehold.co")) {
+                m.setPosterUrl("/images/posters/m" + m.getMovieId() + ".jpg");
+                movieRepository.save(m);
+            }
+        }
     }
 
     private Showtime showtime(

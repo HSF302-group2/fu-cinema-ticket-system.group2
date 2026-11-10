@@ -1,0 +1,165 @@
+/* Giao diện chung */
+.root {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 13px;
+}
+
+.sidebar {
+    -fx-background-color: #1f2937;
+    -fx-padding: 12;
+    -fx-pref-width: 200;
+}
+
+.sidebar .button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #e5e7eb;
+    -fx-alignment: center-left;
+}
+
+.sidebar .button:hover {
+    -fx-background-color: #374151;
+}
+
+.brand {
+    -fx-text-fill: #e50914;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-padding: 0 0 12 0;
+}
+
+.button.primary,
+.btn-primary {
+    -fx-background-color: #e50914;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.btn-primary:hover {
+    -fx-background-color: #b91c1c;
+}
+
+.status-bar {
+    -fx-padding: 4 12;
+    -fx-background-color: #f3f4f6;
+}
+
+.page {
+    -fx-padding: 16;
+    -fx-spacing: 12;
+}
+
+.page-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+
+/* Validation */
+.text-field:error,
+.combo-box:error,
+.date-picker:error,
+.spinner:error,
+.text-area:error {
+    -fx-border-color: #d32f2f;
+    -fx-border-width: 1.5;
+}
+
+/* Đăng nhập */
+.login {
+    -fx-background-color: #f3f4f6;
+    -fx-padding: 32;
+}
+
+.login .text-field {
+    -fx-padding: 10;
+}
+
+.login .button {
+    -fx-padding: 10 24;
+}
+
+/* Thẻ KPI */
+.kpi {
+    -fx-background-color: white;
+    -fx-padding: 16;
+    -fx-background-radius: 8;
+    -fx-border-color: #e5e7eb;
+    -fx-border-radius: 8;
+    -fx-border-width: 1;
+}
+
+/* Sơ đồ ghế */
+.seat-map {
+    -fx-padding: 16;
+}
+
+.screen {
+    -fx-background-color: #9ca3af;
+    -fx-text-fill: white;
+    -fx-alignment: center;
+    -fx-padding: 6;
+    -fx-font-weight: bold;
+    -fx-background-radius: 4;
+}
+
+.seat {
+    -fx-min-width: 34;
+    -fx-min-height: 30;
+    -fx-background-color: #e5e7eb;
+    -fx-background-radius: 6 6 2 2;
+    -fx-font-size: 11px;
+}
+
+.seat:hover {
+    -fx-background-color: #d1d5db;
+}
+
+.seat:selected {
+    -fx-background-color: #16a34a;
+    -fx-text-fill: white;
+}
+
+.seat:sold {
+    -fx-background-color: #6b7280;
+    -fx-text-fill: white;
+    -fx-opacity: 1;
+}
+
+.row-label {
+    -fx-font-weight: bold;
+    -fx-min-width: 20;
+    -fx-padding: 4;
+    -fx-alignment: center;
+}
+
+.legend-swatch {
+    -fx-min-width: 16;
+    -fx-min-height: 16;
+    -fx-background-radius: 3;
+}
+
+.legend-free {
+    -fx-background-color: #e5e7eb;
+}
+
+.legend-selected {
+    -fx-background-color: #16a34a;
+}
+
+.legend-sold {
+    -fx-background-color: #6b7280;
+}
+
+/* Trạng thái đơn đặt vé */
+.st-pending {
+    -fx-text-fill: #b45309;
+    -fx-font-weight: bold;
+}
+
+.st-confirmed {
+    -fx-text-fill: #15803d;
+    -fx-font-weight: bold;
+}
+
+.st-cancelled {
+    -fx-text-fill: #b91c1c;
+}
