@@ -7,10 +7,13 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
 @Component
-@RequiredArgsConstructor
 public class StageInitializer implements ApplicationListener<StageReadyEvent> {
 
     private final SceneManager sceneManager;
+
+    public StageInitializer(SceneManager sceneManager) {
+        this.sceneManager = sceneManager;
+    }
 
     @Override
     public void onApplicationEvent(StageReadyEvent event) {

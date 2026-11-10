@@ -21,7 +21,6 @@ import java.time.format.DateTimeFormatter;
 
 @Component
 @Scope("prototype")
-@RequiredArgsConstructor
 public class MainController {
 
     private static final DateTimeFormatter CLOCK =
@@ -29,6 +28,11 @@ public class MainController {
 
     private final SceneManager sceneManager;
     private final DesktopSession session;
+
+    public MainController(SceneManager sceneManager, DesktopSession session) {
+        this.sceneManager = sceneManager;
+        this.session = session;
+    }
 
     @FXML
     private BorderPane root;

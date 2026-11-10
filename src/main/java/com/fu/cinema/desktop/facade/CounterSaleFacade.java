@@ -25,7 +25,6 @@ import java.util.Set;
 
 @Service
 @Transactional(readOnly = true)
-@RequiredArgsConstructor
 public class CounterSaleFacade {
 
     private final CustomerService customerService;
@@ -33,6 +32,20 @@ public class CounterSaleFacade {
     private final ShowtimeService showtimeService;
     private final BookingService bookingService;
     private final DesktopSession session;
+
+    public CounterSaleFacade(
+            CustomerService customerService,
+            MovieService movieService,
+            ShowtimeService showtimeService,
+            BookingService bookingService,
+            DesktopSession session
+    ) {
+        this.customerService = customerService;
+        this.movieService = movieService;
+        this.showtimeService = showtimeService;
+        this.bookingService = bookingService;
+        this.session = session;
+    }
 
     public List<CustomerItem> searchCustomers(String keyword) {
         return customerService.search(keyword, 0, 20).map(CustomerItem::from).getContent();

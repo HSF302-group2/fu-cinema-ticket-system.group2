@@ -103,21 +103,18 @@ public class BookingController {
                 new StatusOption(null, "Tất cả trạng thái"),
                 new StatusOption(BookingStatus.PENDING, "Chờ xác nhận (PENDING)"),
                 new StatusOption(BookingStatus.CONFIRMED, "Đã xác nhận (CONFIRMED)"),
-                new StatusOption(BookingStatus.CANCELLED, "Đã huỷ (CANCELLED)")
-        );
+                new StatusOption(BookingStatus.CANCELLED, "Đã huỷ (CANCELLED)"));
         cbStatus.getSelectionModel().selectFirst();
 
         // Cấu hình các cột TableView
         colId.setCellValueFactory(d -> new SimpleObjectProperty<>(d.getValue().id()));
         colBookingDate.setCellValueFactory(d -> new SimpleStringProperty(
-                d.getValue().bookingDate() != null ? d.getValue().bookingDate().format(DT_FORMAT) : ""
-        ));
+                d.getValue().bookingDate() != null ? d.getValue().bookingDate().format(DT_FORMAT) : ""));
         colCustomer.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().customerName()));
         colMovie.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().movieTitle()));
         colRoom.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().roomName()));
         colStartTime.setCellValueFactory(d -> new SimpleStringProperty(
-                d.getValue().startTime() != null ? d.getValue().startTime().format(DT_FORMAT) : ""
-        ));
+                d.getValue().startTime() != null ? d.getValue().startTime().format(DT_FORMAT) : ""));
         colSeats.setCellValueFactory(d -> new SimpleObjectProperty<>(d.getValue().seatCount()));
         colTotal.setCellValueFactory(d -> new SimpleStringProperty(MoneyUtil.format(d.getValue().total())));
         colStatus.setCellValueFactory(d -> new SimpleObjectProperty<>(d.getValue().status()));
@@ -138,12 +135,10 @@ public class BookingController {
         ReadOnlyObjectProperty<BookingRow> sel = table.getSelectionModel().selectedItemProperty();
         btnConfirm.disableProperty().bind(Bindings.createBooleanBinding(
                 () -> sel.get() == null || sel.get().status() != BookingStatus.PENDING,
-                sel
-        ));
+                sel));
         btnCancel.disableProperty().bind(Bindings.createBooleanBinding(
                 () -> sel.get() == null || sel.get().status() == BookingStatus.CANCELLED,
-                sel
-        ));
+                sel));
 
         // Double-click xem chi tiết đơn
         table.setRowFactory(tv -> {
@@ -182,7 +177,8 @@ public class BookingController {
     @FXML
     private void onConfirm() {
         BookingRow r = table.getSelectionModel().getSelectedItem();
-        if (r == null) return;
+        if (r == null)
+            return;
         if (AlertUtil.confirm("Xác nhận đơn #" + r.id() + " của khách " + r.customerName() + "?")) {
             fxAsync.runVoid(() -> facade.confirm(r.id()), () -> load(pagination.getCurrentPageIndex()), btnConfirm);
         }
@@ -191,7 +187,8 @@ public class BookingController {
     @FXML
     private void onCancel() {
         BookingRow r = table.getSelectionModel().getSelectedItem();
-        if (r == null) return;
+        if (r == null)
+            return;
         if (AlertUtil.confirm("Huỷ đơn #" + r.id() + "? Các vé sẽ được giải phóng lại ghế trống.")) {
             fxAsync.runVoid(() -> facade.cancel(r.id()), () -> load(pagination.getCurrentPageIndex()), btnCancel);
         }
@@ -209,8 +206,7 @@ public class BookingController {
                 result -> {
                     table.getItems().setAll(result.items());
                     pagination.setPageCount(result.totalPages());
-                }
-        );
+                });
     }
 
     private void showDetail(BookingDetail detail) {

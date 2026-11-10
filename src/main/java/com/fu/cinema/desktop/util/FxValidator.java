@@ -33,7 +33,10 @@ public class FxValidator {
         return errors;
     }
 
-    /** Tô đỏ + tooltip cho ô lỗi, xoá lỗi cũ ở ô hợp lệ. @return true nếu không có lỗi */
+    /**
+     * Tô đỏ + tooltip cho ô lỗi, xoá lỗi cũ ở ô hợp lệ. @return true nếu không có
+     * lỗi
+     */
     public boolean mark(Map<String, String> errors, Map<String, Control> fields) {
         fields.forEach((name, control) -> {
             String msg = errors.get(name);
@@ -43,4 +46,3 @@ public class FxValidator {
         return errors.isEmpty();
     }
 }
-

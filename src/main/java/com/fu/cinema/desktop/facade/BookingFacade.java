@@ -18,11 +18,15 @@ import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
-@RequiredArgsConstructor
 public class BookingFacade {
 
     private final BookingService bookingService;
     private final DesktopSession session;
+
+    public BookingFacade(BookingService bookingService, DesktopSession session) {
+        this.bookingService = bookingService;
+        this.session = session;
+    }
 
     public PageResult<BookingRow> search(BookingStatus status, LocalDate from, LocalDate to, String keyword, int page) {
         return PageResult.of(bookingService.search(status, from, to, keyword, page, 15), BookingRow::from);

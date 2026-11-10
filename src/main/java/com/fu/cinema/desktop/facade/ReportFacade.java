@@ -14,11 +14,15 @@ import java.time.LocalDate;
 
 @Service
 @Transactional(readOnly = true)
-@RequiredArgsConstructor
 public class ReportFacade {
 
     private final ReportService reportService;
     private final DesktopSession session;
+
+    public ReportFacade(ReportService reportService, DesktopSession session) {
+        this.reportService = reportService;
+        this.session = session;
+    }
 
     public ReportData generate(LocalDate start, LocalDate end) {
         session.requireAdmin();
