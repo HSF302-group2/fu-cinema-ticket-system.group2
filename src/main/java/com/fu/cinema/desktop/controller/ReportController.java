@@ -185,7 +185,8 @@ public class ReportController {
         if (downloadsDir.exists() && downloadsDir.isDirectory()) {
             fc.setInitialDirectory(downloadsDir);
         }
-        fc.setInitialFileName("doanh-thu_%s_%s.csv".formatted(snapshot.start(), snapshot.end()));
+        String defaultName = "doanh-thu_%s_%s.csv".formatted(snapshot.start(), snapshot.end());
+        fc.setInitialFileName(defaultName);
         fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV (*.csv)", "*.csv"));
 
         File file = fc.showSaveDialog(btnExport.getScene().getWindow());
@@ -193,9 +194,25 @@ public class ReportController {
             return; // Người dùng ấn Huỷ
         }
 
+        final File targetFile = file.getName().toLowerCase().endsWith(".csv")
+                ? file
+                : new File(file.getParentFile(), file.getName() + ".csv");
+
         fxAsync.runVoid(
-                () -> CsvExporter.write(file.toPath(), snapshot),
-                () -> AlertUtil.info("Đã xuất báo cáo thành công vào: " + file.getName()),
+                () -> {
+                    CsvExporter.write(targetFile.toPath(), snapshot);
+                    // Lưu dự phòng thêm một bản vào Downloads nếu người dùng chọn thư mục khác
+                    if (downloadsDir.exists() && downloadsDir.isDirectory()) {
+                        File backup = new File(downloadsDir, targetFile.getName());
+                        if (!backup.getAbsolutePath().equalsIgnoreCase(targetFile.getAbsolutePath())) {
+                            try {
+                                CsvExporter.write(backup.toPath(), snapshot);
+                            } catch (Exception ignored) {
+                            }
+                        }
+                    }
+                },
+                () -> AlertUtil.info("Đã xuất báo cáo thành công vào: " + targetFile.getName()),
                 btnExport
         );
     }
